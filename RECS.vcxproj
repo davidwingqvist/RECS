@@ -158,6 +158,7 @@
     <ClInclude Include="recs_base.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="recs_component_array.cpp" />
     <ClCompile Include="recs_component_registry.cpp" />
     <ClCompile Include="recs_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

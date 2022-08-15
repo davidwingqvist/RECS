@@ -18,7 +18,7 @@ namespace recs
 		void RegisterNewComponent(const T& component);
 
 		template<typename T>
-		compArray<T>& GetComponentArray() const;
+		void RegisterNewComponent(const T& component, const size_t& size);
 
 		void EntityRemoved(const Entity& entity);
 	};
@@ -36,10 +36,14 @@ namespace recs
 	}
 
 	template<typename T>
-	inline compArray<T>& recs_component_registry::GetComponentArray() const
+	inline void recs_component_registry::RegisterNewComponent(const T& component, const size_t& size)
 	{
 		size_t type = typeid(T).hash_code();
 
-		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->GetArray();
+		// Component is already registered
+		if (m_componentArrays.find(type) != m_componentArrays.end())
+			return;
+
+		m_componentArrays.insert({ type, std::make_shared<recs_component_array<T>>(size) });
 	}
 }

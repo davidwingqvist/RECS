@@ -5,6 +5,10 @@ using namespace recs;
 struct HelloWriter
 {
     int hello = 0;
+    HelloWriter()
+    {
+        std::cout << "Hello LOL!" << std::endl;
+    }
 };
 
 int main()
@@ -16,11 +20,5 @@ int main()
     base.CreateEntity();
     base.CreateEntity();
 
-    base.RegisterComponent(HelloWriter());
-
-    base.ForEach<HelloWriter>([&](Entity& entity, HelloWriter& hello)
-    {
-        hello.hello = entity;
-        std::cout << "Hello from Entity: " << hello.hello << std::endl;
-    });
+    base.RegisterComponent(HelloWriter(), 1000);
 }

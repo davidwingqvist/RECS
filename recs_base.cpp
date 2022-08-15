@@ -1,9 +1,10 @@
 #include "recs_pch.h"
 #include "recs_base.h"
 
-recs::ecs_registry::ecs_registry()
+recs::ecs_registry::ecs_registry(const size_t& size)
 {
-	for (Entity i = 0; i < DEFAULT_MAX_ENTITIES; i++)
+	m_size = size;
+	for (Entity i = 0; i < m_size; i++)
 		m_availableEntities.push(i);
 }
 

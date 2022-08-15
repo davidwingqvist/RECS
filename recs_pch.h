@@ -20,9 +20,6 @@ namespace recs
 {
 	using Entity = std::uint32_t;
 	constexpr int DEFAULT_MAX_ENTITIES = 1000;
-
-	template<typename T>
-	using compArray = std::array<T, DEFAULT_MAX_ENTITIES>;
 }
 
 #endif //PCH_H

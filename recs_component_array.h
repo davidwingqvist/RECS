@@ -15,15 +15,30 @@ namespace recs
 	{
 	private:
 
-		std::array<T, DEFAULT_MAX_ENTITIES> m_components{};
+		T* m_components;
+		size_t m_size = DEFAULT_MAX_ENTITIES;
 
 	public:
 
-		recs_component_array() = default;
-
-		std::array<T, DEFAULT_MAX_ENTITIES>& GetArray()
+		recs_component_array()
 		{
-			return m_components;
+			m_components = new T[m_size];
+		}
+
+		recs_component_array(const size_t& size)
+		{
+			m_size = size;
+			m_components = new T[size];
+		}
+
+		const size_t& GetSize() const
+		{
+			return m_size;
+		}
+
+		T& GetArray()
+		{
+			return *m_components;
 		}
 
 		T& GetComponent(const Entity& entity)
