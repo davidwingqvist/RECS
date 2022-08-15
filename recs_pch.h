@@ -19,7 +19,7 @@
 namespace recs
 {
 	using Entity = std::uint32_t;
-	constexpr int DEFAULT_MAX_ENTITIES = 1000;
+	constexpr int DEFAULT_MAX_ENTITIES = 1000000;
 }
 
 #endif //PCH_H

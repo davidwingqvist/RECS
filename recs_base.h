@@ -30,17 +30,38 @@ namespace recs
 		// Register component with own defined size.
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size);
+
+		template<typename T, typename F>
+		void ForEach(F func);
 	};
 
 	template<typename T>
 	inline void ecs_registry::RegisterComponent(const T& component)
 	{
-		m_componentRegistry.RegisterNewComponent(component);
+		m_componentRegistry.RegisterNewComponent(component, m_size);
 	}
 
 	template<typename T>
 	inline void ecs_registry::RegisterComponent(const T& component, const size_t& size)
 	{
-		m_componentRegistry.RegisterNewComponent(component);
+		// Not allowed to have more components than entities. Shrinking to m_size.
+		if (m_size < size)
+		{
+			m_componentRegistry.RegisterNewComponent(component, m_size);
+			return;
+		}
+
+		m_componentRegistry.RegisterNewComponent(component, size);
+	}
+
+	template<typename T, typename F>
+	inline void ecs_registry::ForEach(F func)
+	{
+		recs_component_array<T> compArray = m_componentRegistry.GetArrayRaw<T>();
+
+		for (auto& entity : m_activeEntities)
+		{
+			func(entity, compArray.GetComponent(entity));
+		}
 	}
 }

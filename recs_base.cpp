@@ -5,7 +5,10 @@ recs::ecs_registry::ecs_registry(const size_t& size)
 {
 	m_size = size;
 	for (Entity i = 0; i < m_size; i++)
-		m_availableEntities.push(i);
+	{
+		//m_availableEntities.push(i);
+		m_activeEntities.push_back(i);
+	}
 }
 
 recs::Entity recs::ecs_registry::CreateEntity()

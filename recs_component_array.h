@@ -28,7 +28,7 @@ namespace recs
 		recs_component_array(const size_t& size)
 		{
 			m_size = size;
-			m_components = new T[size];
+			m_components = new T[m_size];
 		}
 
 		const size_t& GetSize() const
