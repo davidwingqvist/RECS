@@ -15,20 +15,40 @@ namespace recs
 	{
 	private:
 
+		T m_failure;
 		T* m_components;
 		size_t m_size = DEFAULT_MAX_ENTITIES;
+		std::unordered_map<Entity, T*> m_entityToComponent;
+		std::queue<size_t> m_availableComponents;
 
 	public:
 
 		recs_component_array()
 		{
 			m_components = new T[m_size];
+			for (size_t i = 0; i < m_size; i++)
+			{
+				m_availableComponents.push(i);
+			}
 		}
 
 		recs_component_array(const size_t& size)
 		{
 			m_size = size;
 			m_components = new T[m_size];
+			for (size_t i = 0; i < m_size; i++)
+			{
+				m_availableComponents.push(i);
+			}
+		}
+
+		void LinkComponentToEntity(const Entity& entity)
+		{
+			const size_t pos = m_availableComponents.front();
+			m_availableComponents.pop();
+
+			// Link entity to the pos in T array
+			m_entityToComponent[entity] = &T[pos];
 		}
 
 		const size_t& GetSize() const
@@ -43,7 +63,10 @@ namespace recs
 
 		T& GetComponent(const Entity& entity)
 		{
-			return m_components[entity];
+			if (m_entityToComponent.find(entity) == m_entityToComponent.end())
+				return m_failure;
+
+			return *m_entityToComponent[entity];
 		}
 
 
