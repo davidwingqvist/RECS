@@ -19,7 +19,13 @@
 namespace recs
 {
 	using Entity = std::uint32_t;
-	constexpr int DEFAULT_MAX_ENTITIES = 1000;
+	constexpr int DEFAULT_MAX_ENTITIES = 10000;
+
+	struct EntityLink
+	{
+		Entity entity;
+		size_t pos;
+	};
 }
 
 #endif //PCH_H

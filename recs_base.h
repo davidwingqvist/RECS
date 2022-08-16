@@ -21,6 +21,10 @@ namespace recs
 		ecs_registry(const size_t& size = DEFAULT_MAX_ENTITIES);
 
 		Entity CreateEntity();
+
+		template<typename T>
+		void AddComponent(const Entity& entity);
+
 		void DestroyEntity(const Entity& entity);
 
 		// Register component with DEFAULT_MAX_ENTITIES size.
@@ -34,6 +38,12 @@ namespace recs
 		template<typename T, typename F>
 		void ForEach(F func);
 	};
+
+	template<typename T>
+	inline void ecs_registry::AddComponent(const Entity& entity)
+	{
+		m_componentRegistry.AddComponentToEntity<T>(entity);
+	}
 
 	template<typename T>
 	inline void ecs_registry::RegisterComponent(const T& component)
@@ -57,11 +67,6 @@ namespace recs
 	template<typename T, typename F>
 	inline void ecs_registry::ForEach(F func)
 	{
-		recs_component_array<T> compArray = m_componentRegistry.GetArrayRaw<T>();
 
-		for (auto& entity : m_activeEntities)
-		{
-			func(entity, compArray.GetComponent(entity));
-		}
 	}
 }

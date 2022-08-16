@@ -18,8 +18,8 @@ namespace recs
 		T m_failure;
 		T* m_components;
 		size_t m_size = DEFAULT_MAX_ENTITIES;
-		std::unordered_map<Entity, T*> m_entityToComponent;
 		std::queue<size_t> m_availableComponents;
+		std::vector<EntityLink> m_activeComponents;
 
 	public:
 
@@ -30,6 +30,7 @@ namespace recs
 			{
 				m_availableComponents.push(i);
 			}
+			m_activeComponents.reserve(m_size);
 		}
 
 		recs_component_array(const size_t& size)
@@ -40,6 +41,7 @@ namespace recs
 			{
 				m_availableComponents.push(i);
 			}
+			m_activeComponents.reserve(m_size);
 		}
 
 		void LinkComponentToEntity(const Entity& entity)
@@ -47,8 +49,8 @@ namespace recs
 			const size_t pos = m_availableComponents.front();
 			m_availableComponents.pop();
 
-			// Link entity to the pos in T array
-			m_entityToComponent[entity] = &T[pos];
+			EntityLink newLink = { entity, pos };
+			m_activeComponents.push_back(newLink);
 		}
 
 		const size_t& GetSize() const
@@ -61,14 +63,10 @@ namespace recs
 			return *m_components;
 		}
 
-		T& GetComponent(const Entity& entity)
+		std::vector<Entity, size_t>& GetRegisteredComponents()
 		{
-			if (m_entityToComponent.find(entity) == m_entityToComponent.end())
-				return m_failure;
-
-			return *m_entityToComponent[entity];
+			return m_activeComponents;
 		}
-
 
 		// Inherited via recs_component_array_interface
 		virtual void RemoveEntity(const Entity& entity) override
