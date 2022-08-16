@@ -29,9 +29,11 @@ namespace recs
 		// Generates an entity and outputs it. Another copy is stored inside.
 		Entity CreateEntity();
 
-		// Connect a component to an entitiy.
+		/*
+			Add a component to an entity.
+		*/
 		template<typename T>
-		void AddComponent(const Entity& entity);
+		T* AddComponent(const Entity& entity);
 
 		// Get specific component from an entity. Return nullptr if it doesn't exist.
 		template<typename T>
@@ -52,6 +54,9 @@ namespace recs
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size);
 
+		template<typename T>
+		void RegisterOnCreate(std::function<void(const Entity&, T&)> func);
+
 		/*
 			Loops through each entity that has input component.
 			Remember:
@@ -63,9 +68,9 @@ namespace recs
 	};
 
 	template<typename T>
-	inline void recs_registry::AddComponent(const Entity& entity)
+	inline T* recs_registry::AddComponent(const Entity& entity)
 	{
-		m_componentRegistry.AddComponentToEntity<T>(entity);
+		return m_componentRegistry.AddComponentToEntity<T>(entity);
 	}
 
 	template<typename T>
@@ -111,15 +116,21 @@ namespace recs
 		m_componentRegistry.RegisterNewComponent(component, size);
 	}
 
+	template<typename T>
+	inline void recs_registry::RegisterOnCreate(std::function<void(const Entity&, T&)> func)
+	{
+		m_componentRegistry.AssignOnCreateToComponent<T>(func);
+	}
+
 	template<typename T, typename F>
 	inline void recs_registry::ForEach(F func)
 	{
 		const std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
 		T* compArray = m_componentRegistry.GetComponentArray<T>();
 
-		for (auto& entity : linker)
+		for (auto& link : linker)
 		{
-			func(entity.entity, compArray[entity.pos]);
+			func(link.entity, compArray[link.pos]);
 		}
 	}
 }

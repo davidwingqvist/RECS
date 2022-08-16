@@ -21,7 +21,7 @@ namespace recs
 		void RegisterNewComponent(const T& component, const size_t& size);
 
 		template<typename T> 
-		void AddComponentToEntity(const Entity& entity);
+		T* AddComponentToEntity(const Entity& entity);
 
 		template<typename T>
 		void RemoveComponentFromEntity(const Entity& entity);
@@ -33,6 +33,9 @@ namespace recs
 		T* GetComponentArray();
 
 		void EntityRemoved(const Entity& entity);
+
+		template<typename T>
+		void AssignOnCreateToComponent(std::function<void(const Entity&, T&)> func);
 	};
 
 	template<typename T>
@@ -60,11 +63,11 @@ namespace recs
 	}
 
 	template<typename T>
-	inline void recs_component_registry::AddComponentToEntity(const Entity& entity)
+	inline T* recs_component_registry::AddComponentToEntity(const Entity& entity)
 	{
 		size_t type = typeid(T).hash_code();
 
-		dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->LinkComponentToEntity(entity);
+		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->LinkComponentToEntity<T>(entity);
 	}
 
 	template<typename T>
@@ -92,5 +95,16 @@ namespace recs
 			return nullptr;
 
 		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->GetArray();
+	}
+
+	template<typename T>
+	inline void recs_component_registry::AssignOnCreateToComponent(std::function<void(const Entity&, T&)> func)
+	{
+		size_t type = typeid(T).hash_code();
+
+		if (m_componentArrays.find(type) == m_componentArrays.end())
+			return;
+
+		dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->AssignOnCreate(func);
 	}
 }

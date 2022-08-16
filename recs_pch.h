@@ -15,6 +15,7 @@
 #include <vector>
 #include <array>
 #include <unordered_map>
+#include <functional>
 
 namespace recs
 {
