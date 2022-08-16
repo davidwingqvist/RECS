@@ -8,20 +8,9 @@ struct HelloWriter
     int hello = 0;
 };
 
-class Test
-{
-public:
-    int hello = 0;
-
-    void run()
-    {
-        hello =  235 * 6345 / 2.35f * 6.54f / 100.5f + 3.53;
-    }
-};
-
 int main()
 {
-    recs::ecs_registry base;
+    recs::recs_registry base;
 
     base.RegisterComponent(HelloWriter());
 

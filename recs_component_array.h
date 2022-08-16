@@ -1,5 +1,6 @@
 #pragma once
 #include "recs_pch.h"
+#include <iostream>
 
 namespace recs
 {
@@ -46,6 +47,12 @@ namespace recs
 
 		void LinkComponentToEntity(const Entity& entity)
 		{
+			if (m_availableComponents.empty())
+			{
+				std::cout << "RECS: Tried to link an entity to a component array which was full!\n";
+				return;
+			}
+
 			const size_t pos = m_availableComponents.front();
 			m_availableComponents.pop();
 
