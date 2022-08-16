@@ -49,7 +49,7 @@ namespace recs
 		{
 			if (m_availableComponents.empty())
 			{
-				std::cout << "RECS: Tried to link an entity to a component array which was full!\n";
+				std::cout << "RECS: Tried to link entity: " << entity <<  " to a component array which was full!\n";
 				return;
 			}
 

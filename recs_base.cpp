@@ -8,7 +8,6 @@ recs::recs_registry::recs_registry(const size_t& size)
 	for (Entity i = 0; i < m_size; i++)
 	{
 		m_availableEntities.push(i);
-		//m_activeEntities.push_back(i);
 	}
 }
 

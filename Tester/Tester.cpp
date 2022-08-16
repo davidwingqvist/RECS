@@ -14,7 +14,7 @@ int main()
 
     base.RegisterComponent(HelloWriter());
 
-    for (int i = 0; i < DEFAULT_MAX_ENTITIES; i++)
+    for (int i = 0; i < DEFAULT_MAX_ENTITIES + 2; i++)
     {
         base.AddComponent<HelloWriter>(base.CreateEntity());
     }
