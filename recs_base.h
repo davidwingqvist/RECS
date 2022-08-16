@@ -67,6 +67,12 @@ namespace recs
 	template<typename T, typename F>
 	inline void ecs_registry::ForEach(F func)
 	{
+		std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
+		T* compArray = m_componentRegistry.GetComponentArray<T>();
 
+		for (auto& entity : linker)
+		{
+			func(entity.entity, compArray[entity.pos]);
+		}
 	}
 }

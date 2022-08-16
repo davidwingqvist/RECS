@@ -58,12 +58,12 @@ namespace recs
 			return m_size;
 		}
 
-		T& GetArray()
+		T* GetArray()
 		{
-			return *m_components;
+			return m_components;
 		}
 
-		std::vector<Entity, size_t>& GetRegisteredComponents()
+		std::vector<EntityLink>& GetRegisteredComponents()
 		{
 			return m_activeComponents;
 		}
