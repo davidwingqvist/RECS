@@ -70,7 +70,7 @@ namespace recs
 			return m_components;
 		}
 
-		std::vector<EntityLink>& GetRegisteredComponents()
+		const std::vector<EntityLink>& GetRegisteredComponents()
 		{
 			return m_activeComponents;
 		}
@@ -84,9 +84,11 @@ namespace recs
 				{
 					m_availableComponents.push(entity);
 					m_activeComponents.erase(m_activeComponents.begin() + i);
-					break;
+					return;
 				}
 			}
+
+			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
 		}
 
 	};

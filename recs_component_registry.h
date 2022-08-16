@@ -24,7 +24,10 @@ namespace recs
 		void AddComponentToEntity(const Entity& entity);
 
 		template<typename T>
-		std::vector<EntityLink>& GetEntityLinks();
+		void RemoveComponentFromEntity(const Entity& entity);
+
+		template<typename T>
+		const std::vector<EntityLink>& GetEntityLinks();
 
 		template<typename T>
 		T* GetComponentArray();
@@ -65,7 +68,15 @@ namespace recs
 	}
 
 	template<typename T>
-	inline std::vector<EntityLink>& recs_component_registry::GetEntityLinks()
+	inline void recs_component_registry::RemoveComponentFromEntity(const Entity& entity)
+	{
+		size_t type = typeid(T).hash_code();
+
+		dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->RemoveEntity(entity);
+	}
+
+	template<typename T>
+	inline const std::vector<EntityLink>& recs_component_registry::GetEntityLinks()
 	{
 		size_t type = typeid(T).hash_code();
 

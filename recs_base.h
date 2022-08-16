@@ -37,6 +37,10 @@ namespace recs
 		template<typename T>
 		T* GetComponent(const Entity& entity);
 
+		// Remove specific component from an entity.
+		template<typename T>
+		void RemoveComponent(const Entity& entity);
+
 		// Destroy an entity and erase all the components from it.
 		void DestroyEntity(const Entity& entity);
 
@@ -48,7 +52,12 @@ namespace recs
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size);
 
-		// Loops through each entity that has input component.
+		/*
+			Loops through each entity that has input component.
+			Remember:
+				The first parameter intake needs to be a (const Entity&),
+				otherwise undefined behavior or fail to compile may happen.
+		*/
 		template<typename T, typename F>
 		void ForEach(F func);
 	};
@@ -78,6 +87,12 @@ namespace recs
 	}
 
 	template<typename T>
+	inline void recs_registry::RemoveComponent(const Entity& entity)
+	{
+		m_componentRegistry.RemoveComponentFromEntity<T>(entity);
+	}
+
+	template<typename T>
 	inline void recs_registry::RegisterComponent(const T& component)
 	{
 		m_componentRegistry.RegisterNewComponent(component, m_size);
@@ -99,7 +114,7 @@ namespace recs
 	template<typename T, typename F>
 	inline void recs_registry::ForEach(F func)
 	{
-		std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
+		const std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
 		T* compArray = m_componentRegistry.GetComponentArray<T>();
 
 		for (auto& entity : linker)
