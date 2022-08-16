@@ -33,6 +33,10 @@ namespace recs
 		template<typename T>
 		void AddComponent(const Entity& entity);
 
+		// Get specific component from an entity. Return nullptr if it doesn't exist.
+		template<typename T>
+		T* GetComponent(const Entity& entity);
+
 		// Destroy an entity and erase all the components from it.
 		void DestroyEntity(const Entity& entity);
 
@@ -53,6 +57,24 @@ namespace recs
 	inline void recs_registry::AddComponent(const Entity& entity)
 	{
 		m_componentRegistry.AddComponentToEntity<T>(entity);
+	}
+
+	template<typename T>
+	inline T* recs_registry::GetComponent(const Entity& entity)
+	{
+		T* compArray = m_componentRegistry.GetComponentArray<T>();
+		if (compArray == nullptr)
+			return nullptr;
+
+		std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
+
+		for (auto& entityLink : linker)
+		{
+			if (entityLink.entity == entity)
+				return &compArray[entityLink.pos];
+		}
+
+		return nullptr;
 	}
 
 	template<typename T>

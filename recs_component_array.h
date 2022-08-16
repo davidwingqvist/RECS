@@ -78,7 +78,15 @@ namespace recs
 		// Inherited via recs_component_array_interface
 		virtual void RemoveEntity(const Entity& entity) override
 		{
-			m_components[entity] = {};
+			for (size_t i = 0; i < m_activeComponents.size(); i++)
+			{
+				if (m_activeComponents[i].entity == entity)
+				{
+					m_availableComponents.push(entity);
+					m_activeComponents.erase(m_activeComponents.begin() + i);
+					break;
+				}
+			}
 		}
 
 	};

@@ -8,24 +8,28 @@ struct HelloWriter
     int hello = 0;
 };
 
+struct Test
+{
+    int test = 0;
+};
+
 int main()
 {
     recs::recs_registry base;
 
     base.RegisterComponent(HelloWriter());
 
-    for (int i = 0; i < DEFAULT_MAX_ENTITIES + 2; i++)
+    for (Entity i = 0; i < DEFAULT_MAX_ENTITIES; i++)
     {
-        base.AddComponent<HelloWriter>(base.CreateEntity());
+        recs::Entity entity = base.CreateEntity();
+        base.AddComponent<HelloWriter>(entity);
     }
 
 
     double start = omp_get_wtime();
 
     base.ForEach<HelloWriter>([&](Entity& entity, HelloWriter& comp) {
-
-        comp.hello = entity * entity / 2.35f * 6.54f / 100.5f + 3.53;
-        //std::cout << "Hello from Entity: " << comp.hello << std::endl;
+        comp.hello = entity;
     });
 
     double end = omp_get_wtime() - start;
