@@ -22,6 +22,7 @@ int main()
     for (Entity i = 0; i < DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
+        std::cout << "Entity: " << entity << std::endl;
         base.AddComponent<HelloWriter>(entity);
     }
 

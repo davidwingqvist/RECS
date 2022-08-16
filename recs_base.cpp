@@ -13,6 +13,9 @@ recs::recs_registry::recs_registry(const size_t& size)
 
 recs::Entity recs::recs_registry::CreateEntity()
 {
+	if (m_availableEntities.empty())
+		std::cout << "RECS [Warning!]: Too many entities has been created! Undefined behavior will happen!" << std::endl;
+
 	const Entity entity = m_availableEntities.front();
 	m_activeEntities.push_back(entity);
 	m_availableEntities.pop();
