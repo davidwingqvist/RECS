@@ -9,6 +9,7 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
+#include "recs_utility.h"
 #include <queue>
 #include <memory>
 #include <algorithm>
@@ -21,6 +22,7 @@
 namespace recs
 {
 	using Entity = std::uint32_t;
+	using Null_Entity = nullptr_t;
 	constexpr Entity DEFAULT_MAX_ENTITIES = 1000;
 
 	struct EntityLink

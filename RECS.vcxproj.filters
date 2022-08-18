@@ -13,39 +13,72 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{28667dc2-b703-4084-bd55-3f7c3bb6442f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{188c1953-a190-4d03-95f2-3f0a1d1c28de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers">
+      <UniqueIdentifier>{2d89bd89-9f89-4005-acbf-9458af4b2746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{e285fa6d-2aad-4e9b-b24d-3952b49c4033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threads">
+      <UniqueIdentifier>{4a981b57-a163-4957-b1fd-a9e4a9bd1c7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="recs_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="recs_pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="recs_component_registry.h">
-      <Filter>Header Files</Filter>
+      <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="recs_component_array.h">
-      <Filter>Header Files</Filter>
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="recs_base.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="recs_wrapper.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="recs_utility.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="recs_thread.h">
+      <Filter>Threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RECS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="recs_base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="recs_pch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="recs_component_array.cpp">
+      <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="recs_component_registry.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="recs_component_array.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="recs_base.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="recs_pch.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="recs_wrapper.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="recs_utility.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="recs_thread.cpp">
+      <Filter>Threads</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

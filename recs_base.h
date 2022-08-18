@@ -3,6 +3,7 @@
 #include "recs_pch.h"
 #include "recs_component_registry.h"
 #include "recs_component_array.h"
+#include "recs_wrapper.h"
 
 namespace recs
 {
@@ -30,7 +31,7 @@ namespace recs
 		Entity CreateEntity();
 
 		/*
-			Add a component to an entity.
+			Add a component to an entity, outputs a pointer to the newely created component.
 			This will also register a component if it doesn't already exist.
 		*/
 		template<typename T>
@@ -75,6 +76,9 @@ namespace recs
 		template<typename T>
 		void RegisterOnDestroy(std::function<void(const Entity&, T&)> func);
 
+		template<typename T>
+		recs_comp_handle<T> GetEntityAndComponentArray();
+
 		/*
 		Call this function to initiate an update call to each component with 
 			a valid update function.
@@ -85,7 +89,7 @@ namespace recs
 			Loops through each entity that has input component.
 			Remember:
 				The first parameter intake needs to be a (const Entity&),
-				otherwise undefined behavior or fail to compile may happen.
+				otherwise undefined behavior, or fail to compile, may happen.
 		*/
 		template<typename T, typename F>
 		void ForEach(F func);
@@ -101,8 +105,8 @@ namespace recs
 	inline T* recs_registry::GetComponent(const Entity& entity)
 	{
 		T* compArray = m_componentRegistry.GetComponentArray<T>();
-		if (compArray == nullptr)
-			return nullptr;
+		if (compArray == Null_Entity)
+			return Null_Entity;
 
 		std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
 
@@ -112,7 +116,7 @@ namespace recs
 				return &compArray[entityLink.pos];
 		}
 
-		return nullptr;
+		return Null_Entity;
 	}
 
 	template<typename T>
@@ -168,6 +172,12 @@ namespace recs
 	inline void recs_registry::RegisterOnDestroy(std::function<void(const Entity&, T&)> func)
 	{
 		m_componentRegistry.AssignOnDestroyToComponent(func);
+	}
+
+	template<typename T>
+	inline recs_comp_handle<T> recs_registry::GetEntityAndComponentArray()
+	{
+		return recs_comp_handle<T>();
 	}
 
 	template<typename T, typename F>

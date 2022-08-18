@@ -9,6 +9,11 @@ struct HelloWriter
     int hello = 0;
 };
 
+struct Test
+{
+    int test = 0;
+};
+
 int main()
 {
 
@@ -28,11 +33,7 @@ int main()
 
     double start = omp_get_wtime();
     
-    base.Update();
-
-    //base.ForEach<HelloWriter>([&](const Entity& entity, HelloWriter& comp) {
-    //    comp.hello = entity;
-    //});
+    //base.Update();
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";

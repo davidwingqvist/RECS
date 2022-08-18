@@ -49,21 +49,45 @@ namespace recs
 			m_activeComponents.reserve(m_size);
 		}
 
+		~recs_component_array()
+		{
+			if (m_components)
+				delete m_components;
+		}
+
+		// Assign an on create function that is called each time a component is created.
 		void AssignOnCreate(std::function<void(const Entity&, T&)> func)
 		{
 			m_onCreateFunction = func;
 		}
 
+		// Assign an on destroy function that is called each time a component is destroyed.
 		void AssignOnDestroy(std::function<void(const Entity&, T&)> func)
 		{
 			m_onDestroyFunction = func;
 		}
 
+		// Assign an on update function that is called each time recs::recs_registry::Update() is called.
 		void AssignOnUpdate(std::function<void(const Entity&, T&)> func)
 		{
 			m_onUpdateFunction = func;
 		}
 
+		template<typename T>
+		T* GetComponentFromEntity(const Entity& entity)
+		{
+			for (auto& link : m_activeComponents)
+			{
+				if (link.entity == entity)
+				{
+					return &m_components[link.pos];
+				}
+			}
+
+			return Null_Entity;
+		}
+
+		// Link a component to the chosen entity.
 		template<typename T>
 		T* LinkComponentToEntity(const Entity& entity)
 		{
@@ -85,22 +109,25 @@ namespace recs
 			return &m_components[pos];
 		}
 
+		// Return the size of the component array.
 		const size_t& GetSize() const
 		{
 			return m_size;
 		}
 
+		// Get a pointer towards the raw array.
 		T* GetArray()
 		{
 			return m_components;
 		}
 
+		// Return a vector of registered entities to the component array.
 		const std::vector<EntityLink>& GetRegisteredComponents()
 		{
 			return m_activeComponents;
 		}
 
-		// Inherited via recs_component_array_interface
+		// Remove an entity from the component array.
 		virtual void RemoveEntity(const Entity& entity) override
 		{
 			for (size_t i = 0; i < m_activeComponents.size(); i++)
@@ -119,6 +146,7 @@ namespace recs
 			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
 		}
 
+		// Call the update function of each component that is used by an entity.
 		virtual void UpdateComponents() override
 		{
 			if (!m_onUpdateFunction)
