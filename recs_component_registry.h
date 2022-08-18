@@ -29,6 +29,8 @@ namespace recs
 		template<typename T>
 		const std::vector<EntityLink>& GetEntityLinks();
 
+		void UpdateAllComponents();
+
 		template<typename T>
 		T* GetComponentArray();
 
@@ -36,6 +38,12 @@ namespace recs
 
 		template<typename T>
 		void AssignOnCreateToComponent(std::function<void(const Entity&, T&)> func);
+
+		template<typename T>
+		void AssignOnUpdateToComponent(std::function<void(const Entity&, T&)> func);
+
+		template<typename T>
+		void AssignOnDestroyToComponent(std::function<void(const Entity&, T&)> func);
 	};
 
 	template<typename T>
@@ -106,5 +114,27 @@ namespace recs
 			return;
 
 		dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->AssignOnCreate(func);
+	}
+
+	template<typename T>
+	inline void recs_component_registry::AssignOnUpdateToComponent(std::function<void(const Entity&, T&)> func)
+	{
+		size_t type = typeid(T).hash_code();
+
+		if (m_componentArrays.find(type) == m_componentArrays.end())
+			return;
+
+		dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->AssignOnUpdate(func);
+	}
+
+	template<typename T>
+	inline void recs_component_registry::AssignOnDestroyToComponent(std::function<void(const Entity&, T&)> func)
+	{
+		size_t type = typeid(T).hash_code();
+
+		if (m_componentArrays.find(type) == m_componentArrays.end())
+			return;
+
+		dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->AssignOnDestroy(func);
 	}
 }

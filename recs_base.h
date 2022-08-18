@@ -54,8 +54,23 @@ namespace recs
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size);
 
+		// Register a function that will execute each time a component is created.
 		template<typename T>
 		void RegisterOnCreate(std::function<void(const Entity&, T&)> func);
+
+		// Register a function that will execute each time Update() is called.
+		template<typename T>
+		void RegisterOnUpdate(std::function<void(const Entity&, T&)> func);
+
+		// Register a function that will execute each time the entity or component is destroyed.
+		template<typename T>
+		void RegisterOnDestroy(std::function<void(const Entity&, T&)> func);
+
+		/*
+		Call this function to initiate an update call to each component with 
+			a valid update function.
+		*/
+		void Update();
 
 		/*
 			Loops through each entity that has input component.
@@ -120,6 +135,18 @@ namespace recs
 	inline void recs_registry::RegisterOnCreate(std::function<void(const Entity&, T&)> func)
 	{
 		m_componentRegistry.AssignOnCreateToComponent<T>(func);
+	}
+
+	template<typename T>
+	inline void recs_registry::RegisterOnUpdate(std::function<void(const Entity&, T&)> func)
+	{
+		m_componentRegistry.AssignOnUpdateToComponent(func);
+	}
+
+	template<typename T>
+	inline void recs_registry::RegisterOnDestroy(std::function<void(const Entity&, T&)> func)
+	{
+		m_componentRegistry.AssignOnDestroyToComponent(func);
 	}
 
 	template<typename T, typename F>

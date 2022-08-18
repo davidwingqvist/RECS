@@ -9,6 +9,7 @@ namespace recs
 	public:
 		virtual ~recs_component_array_interface() = default;
 		virtual void RemoveEntity(const recs::Entity& entity) = 0;
+		virtual void UpdateComponents() = 0;
 	};
 
 	template<typename T>
@@ -58,6 +59,11 @@ namespace recs
 			m_onDestroyFunction = func;
 		}
 
+		void AssignOnUpdate(std::function<void(const Entity&, T&)> func)
+		{
+			m_onUpdateFunction = func;
+		}
+
 		template<typename T>
 		T* LinkComponentToEntity(const Entity& entity)
 		{
@@ -77,17 +83,6 @@ namespace recs
 				m_onCreateFunction(entity, m_components[pos]);
 
 			return &m_components[pos];
-		}
-
-		void UpdateComponents()
-		{
-			if (!m_onUpdateFunction)
-				return;
-
-			for (auto& link : m_activeComponents)
-			{
-				m_onUpdateFunction(link.entity, m_components[link.pos]);
-			}
 		}
 
 		const size_t& GetSize() const
@@ -122,6 +117,17 @@ namespace recs
 			}
 
 			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
+		}
+
+		virtual void UpdateComponents() override
+		{
+			if (!m_onUpdateFunction)
+				return;
+
+			for (auto& link : m_activeComponents)
+			{
+				m_onUpdateFunction(link.entity, m_components[link.pos]);
+			}
 		}
 
 	};

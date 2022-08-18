@@ -43,3 +43,8 @@ void recs::recs_registry::DestroyEntity(const Entity& entity)
 		std::cout << "RECS: Non-existant entity: " << entity <<  " was attempted to be removed.\n";
 	}
 }
+
+void recs::recs_registry::Update()
+{
+	m_componentRegistry.UpdateAllComponents();
+}

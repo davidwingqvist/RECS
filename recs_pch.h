@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <functional>
 
+
 namespace recs
 {
 	using Entity = std::uint32_t;
