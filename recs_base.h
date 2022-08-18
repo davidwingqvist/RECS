@@ -31,6 +31,7 @@ namespace recs
 
 		/*
 			Add a component to an entity.
+			This will also register a component if it doesn't already exist.
 		*/
 		template<typename T>
 		T* AddComponent(const Entity& entity);
@@ -53,6 +54,14 @@ namespace recs
 		// Register component with own defined amount size.
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size);
+
+		// Register a component with DEFAULT_MAX_ENTITIES size, without triggering any constructors.
+		template<typename T>
+		void RegisterComponent();
+
+		// Register a component with own defined size, without triggering any constructors.
+		template<typename T>
+		void RegisterComponent(const size_t& size);
 
 		// Register a function that will execute each time a component is created.
 		template<typename T>
@@ -129,6 +138,18 @@ namespace recs
 		}
 
 		m_componentRegistry.RegisterNewComponent(component, size);
+	}
+
+	template<typename T>
+	inline void recs_registry::RegisterComponent()
+	{
+		m_componentRegistry.RegisterNewComponent<T>();
+	}
+
+	template<typename T>
+	inline void recs_registry::RegisterComponent(const size_t& size)
+	{
+		m_componentRegistry.RegisterNewComponent<T>(size);
 	}
 
 	template<typename T>

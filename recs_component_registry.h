@@ -18,6 +18,12 @@ namespace recs
 		void RegisterNewComponent(const T& component);
 
 		template<typename T>
+		void RegisterNewComponent();
+
+		template<typename T>
+		void RegisterNewComponent(const size_t& size);
+
+		template<typename T>
 		void RegisterNewComponent(const T& component, const size_t& size);
 
 		template<typename T> 
@@ -59,6 +65,30 @@ namespace recs
 	}
 
 	template<typename T>
+	inline void recs_component_registry::RegisterNewComponent()
+	{
+		size_t type = typeid(T).hash_code();
+
+		// Component is already registered
+		if (m_componentArrays.find(type) != m_componentArrays.end())
+			return;
+
+		m_componentArrays.insert({ type, std::make_shared<recs_component_array<T>>(DEFAULT_MAX_ENTITIES) });
+	}
+
+	template<typename T>
+	inline void recs_component_registry::RegisterNewComponent(const size_t& size)
+	{
+		size_t type = typeid(T).hash_code();
+
+		// Component is already registered
+		if (m_componentArrays.find(type) != m_componentArrays.end())
+			return;
+
+		m_componentArrays.insert({ type, std::make_shared<recs_component_array<T>>(size) });
+	}
+
+	template<typename T>
 	inline void recs_component_registry::RegisterNewComponent(const T& component, const size_t& size)
 	{
 		size_t type = typeid(T).hash_code();
@@ -74,6 +104,11 @@ namespace recs
 	inline T* recs_component_registry::AddComponentToEntity(const Entity& entity)
 	{
 		size_t type = typeid(T).hash_code();
+
+		if (m_componentArrays.find(type) == m_componentArrays.end())
+		{
+			this->RegisterNewComponent<T>();
+		}
 
 		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->LinkComponentToEntity<T>(entity);
 	}

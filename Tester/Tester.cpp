@@ -13,17 +13,17 @@ int main()
 {
 
     recs::recs_registry base;
-    base.RegisterComponent(HelloWriter());
-    base.RegisterOnUpdate<HelloWriter>([&](const Entity& entity, HelloWriter& hw) 
-        {
-            std::cout << "Hello!" << "\n";
-        });
 
     for (Entity i = 0; i < DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
         HelloWriter* hw = base.AddComponent<HelloWriter>(entity);
     }
+
+    base.RegisterOnUpdate<HelloWriter>([&](const Entity& entity, HelloWriter& hw)
+        {
+            std::cout << "Hello!" << "\n";
+        });
 
 
     double start = omp_get_wtime();
