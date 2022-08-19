@@ -4,6 +4,7 @@
 #include "recs_component_registry.h"
 #include "recs_component_array.h"
 #include "recs_wrapper.h"
+#include "recs_event_handler.h"
 
 namespace recs
 {
@@ -20,12 +21,24 @@ namespace recs
 		std::queue<recs::Entity> m_availableEntities;
 		std::vector<Entity> m_activeEntities;
 		recs_component_registry m_componentRegistry;
+		recs_event_handler_interface* m_eventHandler;
 		size_t m_size = DEFAULT_MAX_ENTITIES;
+
+		template<typename T>
+		recs_event_handler<T>* GetEventHandler()
+		{
+			if (!m_eventHandler)
+				m_eventHandler = new recs_event_handler<T>();
+
+			return dynamic_cast<recs_event_handler<T>*>(m_eventHandler);
+		}
 
 	public:
 
 		// Creates a registry, allocated assigned(size) amount of entities.
 		recs_registry(const size_t& size = DEFAULT_MAX_ENTITIES);
+
+		~recs_registry();
 
 		// Generates an entity and outputs it. Another copy is stored inside.
 		Entity CreateEntity();
@@ -63,6 +76,12 @@ namespace recs
 		// Register a component with own defined size, without triggering any constructors.
 		template<typename T>
 		void RegisterComponent(const size_t& size);
+
+		template<typename T, T eventType>
+		void RegisterEvent(const std::function<void()>& func);
+
+		template<typename T, T eventType>
+		void RunEvent();
 
 		// Register a function that will execute each time a component is created.
 		template<typename T>
@@ -190,5 +209,18 @@ namespace recs
 		{
 			func(link.entity, compArray[link.pos]);
 		}
+	}
+
+	template<typename T, T eventType>
+	inline void recs_registry::RegisterEvent(const std::function<void()>& func)
+	{
+		this->GetEventHandler<T>()->RegisterEvent<T>(eventType, func);
+	}
+
+	template<typename T, T eventType>
+	inline void recs_registry::RunEvent()
+	{
+		dynamic_cast<recs_event_handler<T>*>(m_eventHandler)->RunEvent<T, eventType>();
+		//this->GetEventHandler<T>()->RunEvent<T, eventType>();
 	}
 }

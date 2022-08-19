@@ -28,6 +28,9 @@
     <Filter Include="Threads">
       <UniqueIdentifier>{4a981b57-a163-4957-b1fd-a9e4a9bd1c7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{d12b653d-d5b3-4a51-8b70-d3bcd4a6ffb8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -54,6 +57,12 @@
     <ClInclude Include="recs_thread.h">
       <Filter>Threads</Filter>
     </ClInclude>
+    <ClInclude Include="recs_event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="recs_event_handler.h">
+      <Filter>Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RECS.cpp">
@@ -79,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="recs_thread.cpp">
       <Filter>Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="recs_event_handler.cpp">
+      <Filter>Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

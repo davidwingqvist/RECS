@@ -154,6 +154,8 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="recs_component_array.h" />
     <ClInclude Include="recs_component_registry.h" />
+    <ClInclude Include="recs_event.h" />
+    <ClInclude Include="recs_event_handler.h" />
     <ClInclude Include="recs_pch.h" />
     <ClInclude Include="recs_base.h" />
     <ClInclude Include="recs_thread.h" />
@@ -163,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="recs_component_array.cpp" />
     <ClCompile Include="recs_component_registry.cpp" />
+    <ClCompile Include="recs_event_handler.cpp" />
     <ClCompile Include="recs_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

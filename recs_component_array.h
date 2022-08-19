@@ -17,11 +17,12 @@ namespace recs
 	{
 	private:
 
-		T m_failure;
 		T* m_components;
 		size_t m_size = DEFAULT_MAX_ENTITIES;
 		std::queue<size_t> m_availableComponents;
 		std::vector<EntityLink> m_activeComponents;
+		std::unordered_map<size_t, Entity> m_posToEntity;
+		std::unordered_map<Entity, size_t> m_entityToPos;
 		std::function<void(const Entity&, T&)> m_onCreateFunction;
 		std::function<void(const Entity&, T&)> m_onDestroyFunction;
 		std::function<void(const Entity&, T&)> m_onUpdateFunction;
@@ -73,18 +74,20 @@ namespace recs
 			m_onUpdateFunction = func;
 		}
 
+		// Unsafe GET request that returns a pointer to a component.
 		template<typename T>
 		T* GetComponentFromEntity(const Entity& entity)
 		{
-			for (auto& link : m_activeComponents)
-			{
-				if (link.entity == entity)
-				{
-					return &m_components[link.pos];
-				}
-			}
+			return &m_components[m_entityToPos[entity]];
+		}
 
-			return Null_Entity;
+		template<typename T>
+		T* GetComponentFromEntitySafe(const Entity& entity)
+		{
+			if (m_entityToPos.find() != m_entityToPos.end())
+				return &m_components[m_entityToPos[entity]];
+			else
+				return Null_Entity;
 		}
 
 		// Link a component to the chosen entity.
@@ -102,6 +105,9 @@ namespace recs
 
 			EntityLink newLink = { entity, pos };
 			m_activeComponents.push_back(newLink);
+
+			m_posToEntity[pos] = entity;
+			m_entityToPos[entity] = pos;
 
 			if (m_onCreateFunction)
 				m_onCreateFunction(entity, m_components[pos]);
@@ -130,18 +136,32 @@ namespace recs
 		// Remove an entity from the component array.
 		virtual void RemoveEntity(const Entity& entity) override
 		{
-			for (size_t i = 0; i < m_activeComponents.size(); i++)
-			{
-				if (m_activeComponents[i].entity == entity)
-				{
-					if (m_onDestroyFunction)
-						m_onDestroyFunction(entity, m_components[m_activeComponents[i].pos]);
 
-					m_availableComponents.push(entity);
-					m_activeComponents.erase(m_activeComponents.begin() + i);
-					return;
-				}
-			}
+			if (m_onDestroyFunction)
+				m_onDestroyFunction(entity, m_components[m_entityToPos[entity]]);
+
+			m_entityToPos.erase(entity);
+			m_posToEntity.erase(entity);
+
+			m_availableComponents.push(entity);
+
+			//auto it = std::find(m_activeComponents.begin(), m_activeComponents.end(), entity);
+			//ptrdiff_t dist = std::distance(m_activeComponents.begin(), it);
+			//m_activeComponents.erase(m_activeComponents.begin() + dist);
+
+			//for (size_t i = 0; i < m_activeComponents.size(); i++)
+			//{
+			//	if (m_activeComponents[i].entity == entity)
+			//	{
+			//		if (m_onDestroyFunction)
+			//			m_onDestroyFunction(entity, m_components[m_activeComponents[i].pos]);
+
+			//		m_posToEntity.erase(m_activeComponents[i].pos);
+			//		m_availableComponents.push(entity);
+			//		m_activeComponents.erase(m_activeComponents.begin() + i);
+			//		return;
+			//	}
+			//}
 
 			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
 		}

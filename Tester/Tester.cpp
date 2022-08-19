@@ -4,6 +4,10 @@
 
 using namespace recs;
 
+enum class Event {
+    OnSceneChange
+};
+
 struct HelloWriter
 {
     int hello = 0;
@@ -29,6 +33,18 @@ int main()
         {
             std::cout << "Hello!" << "\n";
         });
+
+    int testing = 0;
+
+    base.RegisterEvent<Event, Event::OnSceneChange>([&] {
+
+        testing++;
+
+        std::cout << "Hello! " << testing << std::endl;
+
+        });
+
+    base.RunEvent<Event, Event::OnSceneChange>();
 
 
     double start = omp_get_wtime();
