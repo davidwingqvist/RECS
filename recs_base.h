@@ -220,7 +220,6 @@ namespace recs
 	template<typename T, T eventType>
 	inline void recs_registry::RunEvent()
 	{
-		dynamic_cast<recs_event_handler<T>*>(m_eventHandler)->RunEvent<T, eventType>();
-		//this->GetEventHandler<T>()->RunEvent<T, eventType>();
+		this->GetEventHandler<T>()->RunEvent<T, eventType>();
 	}
 }
