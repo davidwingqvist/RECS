@@ -25,9 +25,7 @@ recs::Entity recs::recs_registry::CreateEntity()
 
 recs::recs_registry::~recs_registry()
 {
-	if (m_eventHandler)
-		delete m_eventHandler;
-	m_eventHandler = nullptr;
+
 }
 
 void recs::recs_registry::DestroyEntity(const Entity& entity)

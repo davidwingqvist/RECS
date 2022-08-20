@@ -5,7 +5,8 @@
 using namespace recs;
 
 enum class Event {
-    OnSceneChange
+    OnSceneChange,
+    DEFAULT
 };
 
 struct HelloWriter
@@ -36,6 +37,12 @@ int main()
 
     int testing = 0;
 
+    base.RegisterEvent<Event, Event::DEFAULT>([&] {
+
+        std::cout << typeid(Event).name() << std::endl;
+
+        });
+
     base.RegisterEvent<Event, Event::OnSceneChange>([&] {
 
         testing++;
@@ -45,6 +52,7 @@ int main()
         });
 
     base.RunEvent<Event, Event::OnSceneChange>();
+    base.RunEvent<Event, Event::DEFAULT>();
 
 
     double start = omp_get_wtime();

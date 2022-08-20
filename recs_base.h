@@ -21,16 +21,24 @@ namespace recs
 		std::queue<recs::Entity> m_availableEntities;
 		std::vector<Entity> m_activeEntities;
 		recs_component_registry m_componentRegistry;
-		recs_event_handler_interface* m_eventHandler;
+
+		/*
+			Storage of all different types of events.
+		*/
+		std::unordered_map<size_t, std::shared_ptr<recs_event_handler_interface>> m_eventHandler;
+
 		size_t m_size = DEFAULT_MAX_ENTITIES;
 
 		template<typename T>
 		recs_event_handler<T>* GetEventHandler()
 		{
-			if (!m_eventHandler)
-				m_eventHandler = new recs_event_handler<T>();
+			const size_t type = typeid(T).hash_code();
 
-			return dynamic_cast<recs_event_handler<T>*>(m_eventHandler);
+			// Create event handler if not already existing.
+			if (m_eventHandler.find(type) == m_eventHandler.end())
+				m_eventHandler.insert({ type, std::make_shared<recs_event_handler<T>>() });
+
+			return dynamic_cast<recs_event_handler<T>*>(m_eventHandler.at(type).get());
 		}
 
 	public:
