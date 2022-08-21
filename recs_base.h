@@ -41,6 +41,12 @@ namespace recs
 			return dynamic_cast<recs_event_handler<T>*>(m_eventHandler.at(type).get());
 		}
 
+		template<typename T>
+		const std::vector<EntityLink>& GetLink(const T&& type)
+		{
+			return m_componentRegistry.GetEntityLinks<T>();
+		}
+
 	public:
 
 		// Creates a registry, allocated assigned(size) amount of entities.
@@ -58,53 +64,75 @@ namespace recs
 		template<typename T>
 		T* AddComponent(const Entity& entity);
 
+
 		// Get specific component from an entity. Return nullptr if it doesn't exist.
 		template<typename T>
 		T* GetComponent(const Entity& entity);
+
 
 		// Remove specific component from an entity.
 		template<typename T>
 		void RemoveComponent(const Entity& entity);
 
+
 		// Destroy an entity and erase all the components from it.
 		void DestroyEntity(const Entity& entity);
+
 
 		// Register component with DEFAULT_MAX_ENTITIES size.
 		template<typename T>
 		void RegisterComponent(const T& component);
 
+
 		// Register component with own defined amount size.
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size);
+
 
 		// Register a component with DEFAULT_MAX_ENTITIES size, without triggering any constructors.
 		template<typename T>
 		void RegisterComponent();
 
+
 		// Register a component with own defined size, without triggering any constructors.
 		template<typename T>
 		void RegisterComponent(const size_t& size);
 
+
+		// Register an event that can be called with the RunEvent() function.
 		template<typename T, T eventType>
 		void RegisterEvent(const std::function<void()>& func);
 
+
+		// Run a specific event linked to the template and template object.
 		template<typename T, T eventType>
 		void RunEvent();
 
-		// Register a function that will execute each time a component is created.
+
+		/*
+			Register a function that will execute each time a component is created.
+		*/
 		template<typename T>
 		void RegisterOnCreate(std::function<void(const Entity&, T&)> func);
 
-		// Register a function that will execute each time Update() is called.
+
+		/*
+			Register a function that will execute each time Update() is called.
+		*/
 		template<typename T>
 		void RegisterOnUpdate(std::function<void(const Entity&, T&)> func);
 
-		// Register a function that will execute each time the entity or component is destroyed.
+
+		/*
+			Register a function that will execute each time the entity or component is destroyed.
+		*/
 		template<typename T>
 		void RegisterOnDestroy(std::function<void(const Entity&, T&)> func);
 
+
 		template<typename T>
 		recs_comp_handle<T> GetEntityAndComponentArray();
+
 
 		/*
 		Call this function to initiate an update call to each component with 
@@ -118,8 +146,11 @@ namespace recs
 				The first parameter intake needs to be a (const Entity&),
 				otherwise undefined behavior, or fail to compile, may happen.
 		*/
-		template<typename T, typename F>
-		void ForEach(F func);
+		//template<typename T, typename F>
+		//void ForEach(F func);
+
+		template<typename... Args, typename... F>
+		void ForEach(const F&&... func);
 	};
 
 	template<typename T>
@@ -207,17 +238,36 @@ namespace recs
 		return recs_comp_handle<T>();
 	}
 
-	template<typename T, typename F>
-	inline void recs_registry::ForEach(F func)
+	template<typename ...Args, typename ...F>
+	inline void recs_registry::ForEach(const F&&... func)
 	{
-		const std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
-		T* compArray = m_componentRegistry.GetComponentArray<T>();
+		//static_assert(sizeof...(Args) > 0 && "RECS [ERROR]: Too few arguments to run ForEach");
+		//std::cout << "Number of args: " << sizeof...(Args) << "\n";
 
-		for (auto& link : linker)
+		const unsigned int size = sizeof...(Args);
+		std::vector<std::vector<EntityLink>> links;
+		links.reserve(size);
+
+		(((links.push_back(this->GetLink(Args())))), ...);
+
+		for (int i = 0; i < links.size(); i++)
 		{
-			func(link.entity, compArray[link.pos]);
+
 		}
+
 	}
+
+	//template<typename T, typename F>
+	//inline void recs_registry::ForEach(F func)
+	//{
+	//	const std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
+	//	T* compArray = m_componentRegistry.GetComponentArray<T>();
+
+	//	for (auto& link : linker)
+	//	{
+	//		func(link.entity, compArray[link.pos]);
+	//	}
+	//}
 
 	template<typename T, T eventType>
 	inline void recs_registry::RegisterEvent(const std::function<void()>& func)

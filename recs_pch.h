@@ -17,6 +17,8 @@
 #include <array>
 #include <unordered_map>
 #include <functional>
+#include <string>
+#include <fstream>
 
 
 namespace recs

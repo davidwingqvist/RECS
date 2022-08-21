@@ -1,6 +1,8 @@
 #include <recs_base.h>
 #include <iostream>
 #include <omp.h>
+#include <iostream>
+#include <fstream>
 
 using namespace recs;
 
@@ -24,6 +26,9 @@ int main()
 
     recs::recs_registry base;
 
+    base.RegisterComponent<HelloWriter>();
+    base.RegisterComponent<Test>();
+
     for (Entity i = 0; i < DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
@@ -35,29 +40,37 @@ int main()
             std::cout << "Hello!" << "\n";
         });
 
-    int testing = 0;
+    //int testing = 0;
 
-    base.RegisterEvent<Event, Event::DEFAULT>([&] {
+    //base.RegisterEvent<Event, Event::DEFAULT>([&] {
 
-        std::cout << typeid(Event).name() << std::endl;
+    //    std::cout << typeid(Event).name() << std::endl;
 
-        });
+    //    });
 
-    base.RegisterEvent<Event, Event::OnSceneChange>([&] {
+    //base.RegisterEvent<Event, Event::OnSceneChange>([&] {
 
-        testing++;
+    //    testing++;
 
-        std::cout << "Hello! " << testing << std::endl;
+    //    std::cout << "Hello! " << testing << std::endl;
 
-        });
+    //    });
 
-    base.RunEvent<Event, Event::OnSceneChange>();
-    base.RunEvent<Event, Event::DEFAULT>();
+    //base.RunEvent<Event, Event::OnSceneChange>();
+    //base.RunEvent<Event, Event::DEFAULT>();
+
+    //base.ForEach<HelloWriter, Test>([](){
+
+
+
+    //    });
 
 
     double start = omp_get_wtime();
     
     //base.Update();
+
+    //recs::create_lua_file("../","test");
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
