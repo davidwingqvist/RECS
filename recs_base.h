@@ -135,11 +135,6 @@ namespace recs
 		template<typename T>
 		void RegisterOnDestroy(std::function<void(const Entity&, T&)> func);
 
-
-		template<typename T>
-		recs_comp_handle<T> GetEntityAndComponentArray();
-
-
 		// Get a view of a specific component.
 		template<typename T>
 		recs_entity_handle<T> GetView()
@@ -249,12 +244,6 @@ namespace recs
 	inline void recs_registry::RegisterOnDestroy(std::function<void(const Entity&, T&)> func)
 	{
 		m_componentRegistry.AssignOnDestroyToComponent(func);
-	}
-
-	template<typename T>
-	inline recs_comp_handle<T> recs_registry::GetEntityAndComponentArray()
-	{
-		return recs_comp_handle<T>();
 	}
 
 	//template<typename ...Args, typename ...F>
