@@ -135,7 +135,7 @@ namespace recs
 		size_t type = typeid(T).hash_code();
 
 		if (m_componentArrays.find(type) == m_componentArrays.end())
-			return Null_Entity;
+			return nullptr;
 
 		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->GetArray();
 	}

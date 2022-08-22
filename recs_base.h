@@ -47,6 +47,12 @@ namespace recs
 			return m_componentRegistry.GetEntityLinks<T>();
 		}
 
+		template<typename T>
+		T* GetComponentFromVoidPointer(const T& type, const size_t& pos)
+		{
+			return type[pos];
+		}
+
 	public:
 
 		// Creates a registry, allocated assigned(size) amount of entities.
@@ -134,6 +140,19 @@ namespace recs
 		recs_comp_handle<T> GetEntityAndComponentArray();
 
 
+		// Get a view of a specific component.
+		template<typename T>
+		recs_entity_handle<T> GetView()
+		{
+			auto& links = m_componentRegistry.GetEntityLinks<T>();
+			auto arrays = m_componentRegistry.GetComponentArray<T>();
+
+			recs_entity_handle<T> view(links, arrays);
+
+			return view;
+		}
+
+
 		/*
 		Call this function to initiate an update call to each component with 
 			a valid update function.
@@ -149,8 +168,8 @@ namespace recs
 		//template<typename T, typename F>
 		//void ForEach(F func);
 
-		template<typename... Args, typename... F>
-		void ForEach(const F&&... func);
+		//template<typename... Args, typename... F>
+		//void ForEach(const F&&... func);
 	};
 
 	template<typename T>
@@ -238,24 +257,26 @@ namespace recs
 		return recs_comp_handle<T>();
 	}
 
-	template<typename ...Args, typename ...F>
-	inline void recs_registry::ForEach(const F&&... func)
-	{
-		//static_assert(sizeof...(Args) > 0 && "RECS [ERROR]: Too few arguments to run ForEach");
-		//std::cout << "Number of args: " << sizeof...(Args) << "\n";
+	//template<typename ...Args, typename ...F>
+	//inline void recs_registry::ForEach(const F&&... func)
+	//{
+	//	//static_assert(sizeof...(Args) > 0 && "RECS [ERROR]: Too few arguments to run ForEach");
+	//	//std::cout << "Number of args: " << sizeof...(Args) << "\n";
 
-		const unsigned int size = sizeof...(Args);
-		std::vector<std::vector<EntityLink>> links;
-		links.reserve(size);
+	//	//const unsigned int size = sizeof...(Args);
+	//	//bool isEntityFirst = false;
+	//	//std::vector<std::vector<EntityLink>> links;
+	//	//std::vector<void*> arrays;
+	//	//links.reserve(size); 
+	//	//arrays.reserve(size);
 
-		(((links.push_back(this->GetLink(Args())))), ...);
+	//	//arrays.push_back((void*)m_componentRegistry.GetComponentArray<Args>()
 
-		for (int i = 0; i < links.size(); i++)
-		{
+	//	//(((links.push_back(this->GetLink(Args())))), ...);
+	//	//(((typeid(Args).hash_code() == typeid(Entity).hash_code() ? isEntityFirst = true : isEntityFirst = isEntityFirst)), ...);
+	//	//((((arrays.push_back((void*)m_componentRegistry.GetComponentArray<Args>())))), ...);
 
-		}
-
-	}
+	//}
 
 	//template<typename T, typename F>
 	//inline void recs_registry::ForEach(F func)

@@ -1,8 +1,6 @@
 #include <recs_base.h>
-#include <iostream>
 #include <omp.h>
 #include <iostream>
-#include <fstream>
 
 using namespace recs;
 
@@ -59,18 +57,23 @@ int main()
     //base.RunEvent<Event, Event::OnSceneChange>();
     //base.RunEvent<Event, Event::DEFAULT>();
 
-    //base.ForEach<HelloWriter, Test>([](){
+    //base.ForEach<HelloWriter>([&](Entity& entity, HelloWriter hello){
 
+    //    std::cout << "Hello!\n";
 
+    //});
 
-    //    });
+    base.GetView<HelloWriter>().ForEach([&](HelloWriter& hello) {
 
+        std::cout << "Hello: " << hello.hello++ << "\n";
+
+        });
 
     double start = omp_get_wtime();
     
     //base.Update();
 
-    //recs::create_lua_file("../","test");
+    //recs::create_lua_file("../","Test");
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";

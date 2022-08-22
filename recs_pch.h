@@ -9,7 +9,6 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
-#include "recs_utility.h"
 #include <queue>
 #include <memory>
 #include <algorithm>

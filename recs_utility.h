@@ -2,6 +2,8 @@
 #include <utility>
 #include <functional>
 #include <fstream>
+#include <string>
+#include <iostream>
 
 namespace recs
 {
@@ -24,10 +26,12 @@ namespace recs
 
 		std::fstream writer;
 		writer.open(file, std::ios_base::out);
-		writer << "-- This is " + fileName + "'s lua file.";
-		writer << "\n\nfunction Start()\n";
+		writer << "-- This is " + fileName + "'s lua file.\n\n";
+		writer << "local " + fileName + " = {}\n";
+		writer << "\nfunction " + fileName + "::Start()\n";
 		writer << "{\n\t\n}\n";
-		writer << "\n\n function Update()\n{\n\t\n}\n";
+		writer << "\n\nfunction " + fileName + "::Update()\n{\n\t\n}\n";
+		writer << "\nreturn " + fileName;
 
 		writer.close();
 	}
