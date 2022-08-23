@@ -330,16 +330,20 @@ namespace recs
 		/*
 			Returns the next value in the string of components.
 		*/
-		virtual HandleLink<T>&& Next() noexcept
+		virtual T& Next() noexcept
 		{
-			HandleLink<T> next(m_linker[m_pos], m_componentArray[m_linker[m_pos].pos]);
+			T& ret = m_componentArray[m_linker[m_pos].pos];
+			m_pos++;
+			return ret;
+		}
 
-			if (m_pos > m_linker.size())
-				m_pos = 0;
-			else
-				m_pos += 1;
-
-			return std::move(next);
+		/*
+			Returns the value at pos, and will not increment the check value.
+		*/
+		virtual T& Next(const unsigned short& pos)
+		{
+			std::cout << "Name: " << typeid(m_componentArray).name() << "\n";
+			return m_componentArray[m_linker[pos].pos];
 		}
 
 		/*
@@ -349,11 +353,6 @@ namespace recs
 		{
 			m_pos = 0;
 
-		}
-
-		virtual void SimpleTest()
-		{
-			std::cout << "Hello From Me!\n";
 		}
 
 		/*
@@ -366,7 +365,6 @@ namespace recs
 
 		virtual const size_t GetSize() const noexcept
 		{
-			//std::cout << "Size: " << m_linker.size() << "\n";
 			return m_linker.size();
 		}
 	};
@@ -391,18 +389,49 @@ namespace recs
 	private:
 
 		const unsigned int m_amount;
+		int test = 0;
+
+	public:
+
+		void CallFunction(const std::function<void(views&...)>& func, views&... args)
+		{
+			//((std::cout << "Type: " << typeid(args).name() << "\n"), ...);
+
+			func(args...);
+
+			//std::cout << "Test: " << test++ << std::endl;
+		}
 
 	public:
 
 		recs_entity_group(recs::recs_registry* registry)
 			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views))
 		{
-
+			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Groups needs to be more than one.");
 		}
 
-		void Test()
+		const size_t GetLowest() const noexcept
 		{
-			(dynamic_cast<recs_entity_handle<views>*>(this)->SimpleTest(), ...);
+			size_t lowest = (size_t)-1;
+
+			return lowest;
+		}
+
+		void ForEach(const std::function<void(views&...)>& func) noexcept
+		{
+			//((std::cout << "Type: " << typeid(views).name() << std::endl), ...);
+
+			size_t lowest = this->GetLowest();
+			for (size_t i = 0; i < DEFAULT_MAX_ENTITIES; i++)
+			{
+				//std::invoke(func, dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
+
+				//func((dynamic_cast<recs_entity_handle<views>*>(this)->Next(i), 0)...);
+
+				//this->CallFunction(func, dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
+
+				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
+			}
 		}
 
 		/*

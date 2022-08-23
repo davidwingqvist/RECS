@@ -26,7 +26,7 @@ namespace recs
 {
 	using Entity = std::uint32_t;
 	using Null_Entity = nullptr_t;
-	constexpr Entity DEFAULT_MAX_ENTITIES = 1000;
+	constexpr Entity DEFAULT_MAX_ENTITIES = 1;
 
 	struct EntityLink
 	{
@@ -40,6 +40,11 @@ namespace recs
 	};
 
 	struct Test
+	{
+		int test = 0;
+	};
+
+	struct Test2
 	{
 		int test = 0;
 	};
