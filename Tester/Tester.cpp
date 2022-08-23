@@ -33,45 +33,9 @@ int main()
         HelloWriter* hw = base.AddComponent<HelloWriter>(entity);
     }
 
-    base.RegisterOnUpdate<HelloWriter>([&](const Entity& entity, HelloWriter& hw)
-        {
-            std::cout << "Hello!" << "\n";
-        });
-
-    //int testing = 0;
-
-    //base.RegisterEvent<Event, Event::DEFAULT>([&] {
-
-    //    std::cout << typeid(Event).name() << std::endl;
-
-    //    });
-
-    //base.RegisterEvent<Event, Event::OnSceneChange>([&] {
-
-    //    testing++;
-
-    //    std::cout << "Hello! " << testing << std::endl;
-
-    //    });
-
-    //base.RunEvent<Event, Event::OnSceneChange>();
-    //base.RunEvent<Event, Event::DEFAULT>();
-
-    //base.ForEach<HelloWriter>([&](Entity& entity, HelloWriter hello){
-
-    //    std::cout << "Hello!\n";
-
-    //});
-
-    base.GetView<HelloWriter>().ForEach([&](HelloWriter& hello) {
-
-        std::cout << "Hello: " << hello.hello++ << "\n";
-
-        });
-
     double start = omp_get_wtime();
-    
-    //base.Update();
+
+    base.GetGroup<HelloWriter>();
 
     //recs::create_lua_file("../","Test");
 

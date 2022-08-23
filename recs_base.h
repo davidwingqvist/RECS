@@ -137,14 +137,21 @@ namespace recs
 
 		// Get a view of a specific component.
 		template<typename T>
-		recs_entity_handle<T> GetView()
+		recs_entity_handle<T>&& GetView() noexcept
 		{
 			auto& links = m_componentRegistry.GetEntityLinks<T>();
 			auto arrays = m_componentRegistry.GetComponentArray<T>();
 
 			recs_entity_handle<T> view(links, arrays);
 
-			return view;
+			return std::move(view);
+		}
+
+		// Get a group of specific components.
+		template<typename... Args>
+		void GetGroup()
+		{
+
 		}
 
 
@@ -153,18 +160,6 @@ namespace recs
 			a valid update function.
 		*/
 		void Update();
-
-		/*
-			Loops through each entity that has input component.
-			Remember:
-				The first parameter intake needs to be a (const Entity&),
-				otherwise undefined behavior, or fail to compile, may happen.
-		*/
-		//template<typename T, typename F>
-		//void ForEach(F func);
-
-		//template<typename... Args, typename... F>
-		//void ForEach(const F&&... func);
 	};
 
 	template<typename T>
@@ -245,39 +240,6 @@ namespace recs
 	{
 		m_componentRegistry.AssignOnDestroyToComponent(func);
 	}
-
-	//template<typename ...Args, typename ...F>
-	//inline void recs_registry::ForEach(const F&&... func)
-	//{
-	//	//static_assert(sizeof...(Args) > 0 && "RECS [ERROR]: Too few arguments to run ForEach");
-	//	//std::cout << "Number of args: " << sizeof...(Args) << "\n";
-
-	//	//const unsigned int size = sizeof...(Args);
-	//	//bool isEntityFirst = false;
-	//	//std::vector<std::vector<EntityLink>> links;
-	//	//std::vector<void*> arrays;
-	//	//links.reserve(size); 
-	//	//arrays.reserve(size);
-
-	//	//arrays.push_back((void*)m_componentRegistry.GetComponentArray<Args>()
-
-	//	//(((links.push_back(this->GetLink(Args())))), ...);
-	//	//(((typeid(Args).hash_code() == typeid(Entity).hash_code() ? isEntityFirst = true : isEntityFirst = isEntityFirst)), ...);
-	//	//((((arrays.push_back((void*)m_componentRegistry.GetComponentArray<Args>())))), ...);
-
-	//}
-
-	//template<typename T, typename F>
-	//inline void recs_registry::ForEach(F func)
-	//{
-	//	const std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
-	//	T* compArray = m_componentRegistry.GetComponentArray<T>();
-
-	//	for (auto& link : linker)
-	//	{
-	//		func(link.entity, compArray[link.pos]);
-	//	}
-	//}
 
 	template<typename T, T eventType>
 	inline void recs_registry::RegisterEvent(const std::function<void()>& func)
