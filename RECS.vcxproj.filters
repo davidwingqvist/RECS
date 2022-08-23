@@ -19,9 +19,6 @@
     <Filter Include="Base">
       <UniqueIdentifier>{188c1953-a190-4d03-95f2-3f0a1d1c28de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Wrappers">
-      <UniqueIdentifier>{2d89bd89-9f89-4005-acbf-9458af4b2746}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utility">
       <UniqueIdentifier>{e285fa6d-2aad-4e9b-b24d-3952b49c4033}</UniqueIdentifier>
     </Filter>
@@ -47,9 +44,6 @@
     </ClInclude>
     <ClInclude Include="recs_base.h">
       <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="recs_wrapper.h">
-      <Filter>Wrappers</Filter>
     </ClInclude>
     <ClInclude Include="recs_utility.h">
       <Filter>Utility</Filter>
@@ -79,9 +73,6 @@
     </ClCompile>
     <ClCompile Include="recs_pch.cpp">
       <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="recs_wrapper.cpp">
-      <Filter>Wrappers</Filter>
     </ClCompile>
     <ClCompile Include="recs_utility.cpp">
       <Filter>Utility</Filter>

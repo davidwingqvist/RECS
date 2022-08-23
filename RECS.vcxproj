@@ -162,7 +162,6 @@
     <ClInclude Include="recs_base.h" />
     <ClInclude Include="recs_thread.h" />
     <ClInclude Include="recs_utility.h" />
-    <ClInclude Include="recs_wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="recs_component_array.cpp" />
@@ -178,7 +177,6 @@
     <ClCompile Include="recs_base.cpp" />
     <ClCompile Include="recs_thread.cpp" />
     <ClCompile Include="recs_utility.cpp" />
-    <ClCompile Include="recs_wrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

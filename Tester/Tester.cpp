@@ -35,9 +35,7 @@ int main()
 
     double start = omp_get_wtime();
 
-    base.GetGroup<HelloWriter>();
-
-    //recs::create_lua_file("../","Test");
+    auto group = recs_entity_group<HelloWriter, Test>(&base);
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
