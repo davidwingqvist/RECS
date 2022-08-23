@@ -7,8 +7,12 @@
 
 namespace recs
 {
+
 	template<typename T>
 	class recs_entity_handle;
+
+	template<class... views>
+	class recs_entity_group;
 
 	/*
 		A registry that holds each available entities.
@@ -139,7 +143,7 @@ namespace recs
 
 		// Get a view of a specific component.
 		template<typename T>
-		recs_entity_handle<T>&& GetView() noexcept
+		recs_entity_handle<T>&& View() noexcept
 		{
 			auto& links = m_componentRegistry.GetEntityLinks<T>();
 			auto arrays = m_componentRegistry.GetComponentArray<T>();
@@ -149,16 +153,9 @@ namespace recs
 			return std::move(view);
 		}
 
-		//// Get a group of specific components.
-		//template<typename... Args>
-		//recs_entity_group<Args...>&& GetGroup()
-		//{
-		//	auto& links = m_componentRegistry.GetEntityLinks<Args...>();
-		//	auto arrays = m_componentRegistry.GetComponentArray<Args...>();
-
-		//	recs_entity_group<Args...> group(links, arrays);
-		//	return std::move(group);
-		//}
+		// Get a group of specific components.
+		template<class... types>
+		recs_entity_group<types...> Group();
 
 
 		/*
@@ -263,6 +260,12 @@ namespace recs
 	{
 		this->GetEventHandler<T>()->RunEvent<T, eventType>();
 	}
+
+	template<class ...types>
+	inline recs_entity_group<types...> recs_registry::Group()
+	{
+		return std::move(recs_entity_group<types...>(this));
+	}
 }
 
 /*
@@ -272,6 +275,7 @@ namespace recs
 */
 namespace recs
 {
+
 	template<typename T>
 	struct HandleLink
 	{
@@ -295,8 +299,8 @@ namespace recs
 	protected:
 
 		const std::vector<EntityLink>& m_linker;
+		unsigned short m_pos = 0;
 		T* m_componentArray = nullptr;
-		size_t m_pos = 0;
 
 	public:
 
@@ -318,15 +322,15 @@ namespace recs
 			loop through each component and execute the function.
 			Check the other overloaded functions.
 		*/
-		void ForEach(const std::function<void(const Entity&, T&)>&& func);
+		virtual void ForEach(const std::function<void(const Entity&, T&)>&& func);
 
 		// loop through each component and execute the function.
-		void ForEach(const std::function<void(T&)>&& func);
+		virtual void ForEach(const std::function<void(T&)>&& func);
 
 		/*
 			Returns the next value in the string of components.
 		*/
-		HandleLink<T>&& Next() noexcept
+		virtual HandleLink<T>&& Next() noexcept
 		{
 			HandleLink<T> next(m_linker[m_pos], m_componentArray[m_linker[m_pos].pos]);
 
@@ -341,15 +345,21 @@ namespace recs
 		/*
 			Reset the Next value to 0.
 		*/
-		void ResetNext()
+		virtual void ResetNext()
 		{
 			m_pos = 0;
+
+		}
+
+		virtual void SimpleTest()
+		{
+			std::cout << "Hello From Me!\n";
 		}
 
 		/*
 			Reset the Next value with specific position value.
 		*/
-		void ResetNext(const size_t&& p_value)
+		virtual void ResetNext(const unsigned short&& p_value)
 		{
 			m_pos = p_value;
 		}
@@ -380,7 +390,6 @@ namespace recs
 	{
 	private:
 
-		std::tuple<views...> m_views;
 		const unsigned int m_amount;
 
 	public:
@@ -388,13 +397,12 @@ namespace recs
 		recs_entity_group(recs::recs_registry* registry)
 			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views))
 		{
-			std::tuple<views...> view;
-			m_views = std::move(view);
+
 		}
 
 		void Test()
 		{
-			std::cout << dynamic_cast<recs_entity_handle<HelloWriter>*>(this)->GetSize() << "\n";
+			(dynamic_cast<recs_entity_handle<views>*>(this)->SimpleTest(), ...);
 		}
 
 		/*

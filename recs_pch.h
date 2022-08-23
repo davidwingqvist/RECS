@@ -18,6 +18,8 @@
 #include <functional>
 #include <string>
 #include <fstream>
+#include <tuple>
+#include <type_traits>
 
 
 namespace recs
