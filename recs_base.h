@@ -354,8 +354,9 @@ namespace recs
 			m_pos = p_value;
 		}
 
-		virtual const size_t& GetSize() const
+		virtual const size_t GetSize() const noexcept
 		{
+			//std::cout << "Size: " << m_linker.size() << "\n";
 			return m_linker.size();
 		}
 	};
@@ -380,14 +381,28 @@ namespace recs
 	private:
 
 		std::tuple<views...> m_views;
+		const unsigned int m_amount;
 
 	public:
 
 		recs_entity_group(recs::recs_registry* registry)
-			:recs_entity_handle<views>(registry)...
+			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views))
 		{
 			std::tuple<views...> view;
 			m_views = std::move(view);
+		}
+
+		void Test()
+		{
+			std::cout << dynamic_cast<recs_entity_handle<HelloWriter>*>(this)->GetSize() << "\n";
+		}
+
+		/*
+			Return the amount of components connected to the group.
+		*/
+		const unsigned int& Amount() const
+		{
+			return m_amount;
 		}
 	};
 }

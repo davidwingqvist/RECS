@@ -9,15 +9,7 @@ enum class Event {
     DEFAULT
 };
 
-struct HelloWriter
-{
-    int hello = 0;
-};
 
-struct Test
-{
-    int test = 0;
-};
 
 int main()
 {
@@ -37,6 +29,9 @@ int main()
 
     auto group = recs_entity_group<HelloWriter, Test>(&base);
 
+
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
+
+    while (true) {};
 }

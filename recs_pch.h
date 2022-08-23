@@ -31,6 +31,16 @@ namespace recs
 		Entity entity;
 		size_t pos;
 	};
+
+	struct HelloWriter
+	{
+		int hello = 0;
+	};
+
+	struct Test
+	{
+		int test = 0;
+	};
 }
 
 #endif //PCH_H
