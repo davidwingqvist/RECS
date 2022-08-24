@@ -38,7 +38,6 @@ int main()
     double start = omp_get_wtime();
 
     auto group = base.Group<HelloWriter, Test, Test2>();
-
     group.ForEach([&](HelloWriter& hello, Test& test, Test2& test2) {
 
         hello.hello = 25;
@@ -46,6 +45,23 @@ int main()
         test2.test = 25;
 
      });
+
+    group.ForEach([&](HelloWriter& hello, Test& test, Test2& test2) {
+
+        hello.hello = 50;
+        test.test = 50;
+        test2.test = 50;
+
+        std::cout << typeid(hello).name() << " " << typeid(test).name() << " " << typeid(test2).name() << "\n";
+
+        });
+
+    //auto view = base.View<HelloWriter>();
+    //view.ForEach([&](HelloWriter& helo) {
+
+    //    helo.hello = 25;
+
+    //    });
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";

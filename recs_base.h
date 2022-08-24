@@ -342,7 +342,6 @@ namespace recs
 		*/
 		virtual T& Next(const unsigned short& pos)
 		{
-			std::cout << "Name: " << typeid(m_componentArray).name() << "\n";
 			return m_componentArray[m_linker[pos].pos];
 		}
 
@@ -389,18 +388,6 @@ namespace recs
 	private:
 
 		const unsigned int m_amount;
-		int test = 0;
-
-	public:
-
-		void CallFunction(const std::function<void(views&...)>& func, views&... args)
-		{
-			//((std::cout << "Type: " << typeid(args).name() << "\n"), ...);
-
-			func(args...);
-
-			//std::cout << "Test: " << test++ << std::endl;
-		}
 
 	public:
 
@@ -410,28 +397,38 @@ namespace recs
 			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Groups needs to be more than one.");
 		}
 
-		const size_t GetLowest() const noexcept
-		{
-			size_t lowest = (size_t)-1;
+		/*
+			Goes through each entity that contain the connected components and exectues the function.
 
-			return lowest;
-		}
-
+			Rememeber: If one of the components doesn't exist for the entity or system, this function will not run.
+		*/
 		void ForEach(const std::function<void(views&...)>& func) noexcept
 		{
-			//((std::cout << "Type: " << typeid(views).name() << std::endl), ...);
-
-			size_t lowest = this->GetLowest();
-			for (size_t i = 0; i < DEFAULT_MAX_ENTITIES; i++)
+			size_t loops = this->GetSize();
+			for (size_t i = 0; i < loops; i++)
 			{
-				//std::invoke(func, dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
-
-				//func((dynamic_cast<recs_entity_handle<views>*>(this)->Next(i), 0)...);
-
-				//this->CallFunction(func, dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
-
 				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
 			}
+		}
+
+		const size_t GetSize() noexcept
+		{
+			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Group needs to be more than one.");
+
+			size_t size = 9999999;
+			((size > dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() ? size = dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() : size = size), ...);
+
+			return size;
+		}
+
+		void Next() const
+		{
+			std::cout << "This function is not implemented.\n";
+		}
+
+		void ResetNext() const
+		{
+			std::cout << "This function is not implemented.\n";
 		}
 
 		/*
