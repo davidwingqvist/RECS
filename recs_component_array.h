@@ -74,6 +74,11 @@ namespace recs
 			m_onUpdateFunction = func;
 		}
 
+		const std::unordered_map<Entity, size_t>& GetEntityLink() const
+		{
+			return m_entityToPos;
+		}
+
 		// Unsafe GET request that returns a pointer to a component.
 		template<typename T>
 		T* GetComponentFromEntity(const Entity& entity)
@@ -163,7 +168,7 @@ namespace recs
 			//	}
 			//}
 
-			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
+			//std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
 		}
 
 		// Call the update function of each component that is used by an entity.

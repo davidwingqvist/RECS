@@ -35,6 +35,9 @@ namespace recs
 		template<typename T>
 		const std::vector<EntityLink>& GetEntityLinks();
 
+		template<typename T>
+		const std::unordered_map<Entity, size_t>& GetEntityLink() const;
+
 		void UpdateAllComponents();
 
 		template<typename T>
@@ -127,6 +130,14 @@ namespace recs
 		size_t type = typeid(T).hash_code();
 
 		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->GetRegisteredComponents();
+	}
+
+	template<typename T>
+	inline const std::unordered_map<Entity, size_t>& recs_component_registry::GetEntityLink() const
+	{
+		size_t type = typeid(T).hash_code();
+		
+		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->GetEntityLink();
 	}
 
 	template<typename T>

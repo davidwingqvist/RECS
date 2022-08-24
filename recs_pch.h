@@ -20,13 +20,15 @@
 #include <fstream>
 #include <tuple>
 #include <type_traits>
+#include <cassert>
 
 
 namespace recs
 {
 	using Entity = std::uint32_t;
+	using Link = std::unordered_map<Entity, size_t>;
 	using Null_Entity = nullptr_t;
-	constexpr Entity DEFAULT_MAX_ENTITIES = 10000;
+	constexpr Entity DEFAULT_MAX_ENTITIES = 2500;
 
 	struct EntityLink
 	{
@@ -37,16 +39,25 @@ namespace recs
 	struct HelloWriter
 	{
 		int hello = 0;
+		double test = 0;
+		double test2 = 0;
+		double test3 = 0;
 	};
 
 	struct Test
 	{
 		int test = 0;
+		double test2 = 0;
+		double test3 = 0;
+		double test4 = 0;
 	};
 
 	struct Test2
 	{
 		int test = 0;
+		double test2 = 0;
+		double test3 = 0;
+		double test4 = 0;
 	};
 }
 

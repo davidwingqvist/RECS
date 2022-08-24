@@ -145,10 +145,7 @@ namespace recs
 		template<typename T>
 		recs_entity_handle<T>&& View() noexcept
 		{
-			auto& links = m_componentRegistry.GetEntityLinks<T>();
-			auto arrays = m_componentRegistry.GetComponentArray<T>();
-
-			recs_entity_handle<T> view(links, arrays);
+			recs_entity_handle<T> view(this);
 
 			return std::move(view);
 		}
@@ -276,19 +273,6 @@ namespace recs
 namespace recs
 {
 
-	template<typename T>
-	struct HandleLink
-	{
-		const EntityLink& link;
-		T& component;
-
-		HandleLink(const EntityLink& linker, T& comp)
-			:link(linker), component(comp)
-		{
-
-		}
-	};
-
 	/*
 		This is a handle that lists all entities linked to a specific component.
 	*/
@@ -298,21 +282,15 @@ namespace recs
 	{
 	protected:
 
-		const std::vector<EntityLink>& m_linker;
+		const Link& m_linker;
+		const std::vector<EntityLink>& m_entityLinker;
 		unsigned short m_pos = 0;
 		T* m_componentArray = nullptr;
 
 	public:
 
-		recs_entity_handle(const std::vector<EntityLink>& linker, void* compArray)
-			: m_linker(linker), m_componentArray((T*)compArray)
-		{
-			//m_componentArray = compArray;
-			m_pos = 0;
-		}
-
 		recs_entity_handle(recs::recs_registry* registry)
-			: m_linker(registry->GetComponentRegistry().GetEntityLinks<T>()), m_componentArray(registry->GetComponentRegistry().GetComponentArray<T>())
+			: m_linker(registry->GetComponentRegistry().GetEntityLink<T>()), m_componentArray(registry->GetComponentRegistry().GetComponentArray<T>()), m_entityLinker(registry->GetComponentRegistry().GetEntityLinks<T>())
 		{
 			m_pos = 0;
 		}
@@ -328,21 +306,12 @@ namespace recs
 		virtual void ForEach(const std::function<void(T&)>&& func);
 
 		/*
-			Returns the next value in the string of components.
-		*/
-		virtual T& Next() noexcept
-		{
-			T& ret = m_componentArray[m_linker[m_pos].pos];
-			m_pos++;
-			return ret;
-		}
-
-		/*
 			Returns the value at pos, and will not increment the check value.
 		*/
-		virtual T& Next(const unsigned short& pos)
+		virtual T& Next(const Entity& entity)
 		{
-			return m_componentArray[m_linker[pos].pos];
+			//std::cout << entity << "\n";
+			return m_componentArray[m_linker.at(entity)];
 		}
 
 		/*
@@ -351,7 +320,6 @@ namespace recs
 		virtual void ResetNext()
 		{
 			m_pos = 0;
-
 		}
 
 		/*
@@ -366,19 +334,24 @@ namespace recs
 		{
 			return m_linker.size();
 		}
+
+		virtual const Link& GetLink() const
+		{
+			return m_linker;
+		}
 	};
 
 	template<typename T>
 	inline void recs_entity_handle<T>::ForEach(const std::function<void(const Entity&, T&)>&& func)
 	{
-		for (auto& link : m_linker)
+		for (auto& link : m_entityLinker)
 			func(link.entity, m_componentArray[link.pos]);
 	}
 
 	template<typename T>
 	inline void recs_entity_handle<T>::ForEach(const std::function<void(T&)>&& func)
 	{
-		for (auto& link : m_linker)
+		for (auto& link : m_entityLinker)
 			func(m_componentArray[link.pos]);
 	}
 
@@ -388,6 +361,19 @@ namespace recs
 	private:
 
 		const unsigned int m_amount;
+
+		Link const* GetLowestLink()
+		{
+			size_t size = 9999999;
+			((size > dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() ? size = dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() : size = size), ...);
+
+			Link const* link = nullptr;
+			((size == dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() ? link = &dynamic_cast<recs_entity_handle<views>*>(this)->GetLink() : link = link), ...);
+
+			assert(link != nullptr && "RECS [ASSERT ERROR]: Couldn't find the lowest link.");
+
+			return link;
+		}
 
 	public:
 
@@ -404,11 +390,25 @@ namespace recs
 		*/
 		void ForEach(const std::function<void(views&...)>& func) noexcept
 		{
-			size_t loops = this->GetSize();
-			for (size_t i = 0; i < loops; i++)
-			{
-				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(i)...);
-			}
+			//const Link& linker = dynamic_cast<recs_entity_handle<HelloWriter>*>(this)->GetLink();
+
+			Link const* linker = this->GetLowestLink();
+
+			for(auto& link : *linker)
+				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(link.first)...);
+		}
+
+		/*
+			Goes through each entity that contain the connected components and exectues the function.
+
+			Rememeber: If one of the components doesn't exist for the entity or system, this function will not run.
+		*/
+		void ForEach(const std::function<void(const Entity&, views&...)>& func) noexcept
+		{
+			Link const* linker = this->GetLowestLink();
+
+			for (auto& link : *linker)
+				func(link.first, dynamic_cast<recs_entity_handle<views>*>(this)->Next(link.first)...);
 		}
 
 		const size_t GetSize() noexcept
