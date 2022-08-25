@@ -5,6 +5,18 @@
 #include "recs_component_array.h"
 #include "recs_event_handler.h"
 
+
+/*
+
+	TODO: 
+	* Optimize groups.
+	* Create dynamic groups. -- These should be able to be saved, but might affect performance.
+	* Create "Duel" function. -- This one takes in two entities and double the components, it is meant to be an easy way to loop through each entity against each other.
+
+	Ideas:
+	* Limit some entities to not be looped through?
+*/
+
 namespace recs
 {
 
@@ -339,6 +351,19 @@ namespace recs
 		{
 			return m_linker;
 		}
+
+		virtual const std::vector<EntityLink>& GetEntityLink() const
+		{
+			return m_entityLinker;
+		}
+
+		virtual bool HasEntity(const Entity& entity) const
+		{
+			if (m_linker.find(entity) != m_linker.end())
+				return true;
+			
+			return false;
+		}
 	};
 
 	template<typename T>
@@ -355,12 +380,17 @@ namespace recs
 			func(m_componentArray[link.pos]);
 	}
 
+	/*
+		This is a class that holds several different types of components that can be iterated over.
+		Please discard any created instance after you are done with them, as in: Don't save any of these since they will be outdated in the next loop.
+	*/
 	template<class... views>
 	class recs_entity_group : public recs_entity_handle<views>...
 	{
 	private:
 
 		const unsigned int m_amount;
+		const Entity_Group m_list;
 
 		Link const* GetLowestLink()
 		{
@@ -375,10 +405,28 @@ namespace recs
 			return link;
 		}
 
+		const Entity_Group GenerateList()
+		{
+			Link const* lowest = this->GetLowestLink();
+
+			Entity_Group group;
+
+			for (auto& link : *lowest)
+			{
+				unsigned short everyHas = 0;
+				((dynamic_cast<recs_entity_handle<views>*>(this)->HasEntity(link.first) == true ? everyHas++ : everyHas--), ...);
+
+				if (everyHas == m_amount)
+					group.push_back(link.first);
+			}
+
+			return std::move(group);
+		}
+
 	public:
 
 		recs_entity_group(recs::recs_registry* registry)
-			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views))
+			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views)), m_list(this->GenerateList())
 		{
 			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Groups needs to be more than one.");
 		}
@@ -390,12 +438,10 @@ namespace recs
 		*/
 		void ForEach(const std::function<void(views&...)>& func) noexcept
 		{
-			//const Link& linker = dynamic_cast<recs_entity_handle<HelloWriter>*>(this)->GetLink();
+			//Link const* linker = this->GetLowestLink();
 
-			Link const* linker = this->GetLowestLink();
-
-			for(auto& link : *linker)
-				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(link.first)...);
+			for(auto& entity : m_list)
+				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
 		}
 
 		/*
@@ -405,10 +451,9 @@ namespace recs
 		*/
 		void ForEach(const std::function<void(const Entity&, views&...)>& func) noexcept
 		{
-			Link const* linker = this->GetLowestLink();
 
-			for (auto& link : *linker)
-				func(link.first, dynamic_cast<recs_entity_handle<views>*>(this)->Next(link.first)...);
+			for (auto& entity : m_list)
+				func(entity, dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
 		}
 
 		const size_t GetSize() noexcept

@@ -36,40 +36,14 @@ int main()
 
     }
 
-    base.RemoveComponent<HelloWriter>(0);
-
     double start = omp_get_wtime();
 
-    //auto group = base.Group<HelloWriter, Test, Test2>();
-    //group.ForEach([&](const Entity& entity, HelloWriter& hello, Test& test, Test2& test2) {
+    auto group = base.Group<HelloWriter, Test, Test2>();
+    group.ForEach([&](const Entity& entity, HelloWriter& hello, Test& test, Test2& test2) {
 
-    //    hello.hello = entity;
-    //    test.test = entity;
-    //    test2.test = test.test3;
-    //    std::cout << entity << "\n";
+        std::cout << entity << "\n";
 
-    // });
-
-    base.View<HelloWriter>().ForEach([&](const Entity& entity, HelloWriter& hello) {
-
-        hello.hello = entity;
-
-        });
-
-    //group.ForEach([&](HelloWriter& hello, Test& test, Test2& test2) {
-
-    //    hello.hello = 50;
-    //    test.test = 50;
-    //    test2.test = 50;
-
-    //    });
-
-    //auto view = base.View<HelloWriter>();
-    //view.ForEach([&](HelloWriter& helo) {
-
-    //    helo.hello = 25;
-
-    //    });
+     });
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";

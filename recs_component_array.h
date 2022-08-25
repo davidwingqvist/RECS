@@ -150,25 +150,16 @@ namespace recs
 
 			m_availableComponents.push(entity);
 
-			//auto it = std::find(m_activeComponents.begin(), m_activeComponents.end(), entity);
-			//ptrdiff_t dist = std::distance(m_activeComponents.begin(), it);
-			//m_activeComponents.erase(m_activeComponents.begin() + dist);
+			for (size_t i = 0; i < m_activeComponents.size(); i++)
+			{
+				if (m_activeComponents[i].entity == entity)
+				{
+					m_activeComponents.erase(m_activeComponents.begin() + i);
+					return;
+				}
+			}
 
-			//for (size_t i = 0; i < m_activeComponents.size(); i++)
-			//{
-			//	if (m_activeComponents[i].entity == entity)
-			//	{
-			//		if (m_onDestroyFunction)
-			//			m_onDestroyFunction(entity, m_components[m_activeComponents[i].pos]);
-
-			//		m_posToEntity.erase(m_activeComponents[i].pos);
-			//		m_availableComponents.push(entity);
-			//		m_activeComponents.erase(m_activeComponents.begin() + i);
-			//		return;
-			//	}
-			//}
-
-			//std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
+			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
 		}
 
 		// Call the update function of each component that is used by an entity.
