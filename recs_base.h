@@ -12,6 +12,7 @@
 	* Optimize groups.
 	* Create dynamic groups. -- These should be able to be saved, but might affect performance.
 	* Create "Duel" function. -- This one takes in two entities and double the components, it is meant to be an easy way to loop through each entity against each other.
+	* Allow re-registration of components. -- This is to allow resize of component arrays.
 
 	Ideas:
 	* Limit some entities to not be looped through?
@@ -59,18 +60,6 @@ namespace recs
 			return dynamic_cast<recs_event_handler<T>*>(m_eventHandler.at(type).get());
 		}
 
-		template<typename T>
-		const std::vector<EntityLink>& GetLink(const T&& type)
-		{
-			return m_componentRegistry.GetEntityLinks<T>();
-		}
-
-		template<typename T>
-		T* GetComponentFromVoidPointer(const T& type, const size_t& pos)
-		{
-			return type[pos];
-		}
-
 	public:
 
 		// Creates a registry, allocated assigned(size) amount of entities.
@@ -105,13 +94,7 @@ namespace recs
 
 		// Register component with DEFAULT_MAX_ENTITIES size.
 		template<typename T>
-		void RegisterComponent(const T& component);
-
-
-		// Register component with own defined amount size.
-		template<typename T>
-		void RegisterComponent(const T& component, const size_t& size);
-
+		void RegisterComponent(const T& component, const size_t& size = DEFAULT_MAX_ENTITIES, const bool& shouldCopy = false);
 
 		// Register a component with DEFAULT_MAX_ENTITIES size, without triggering any constructors.
 		template<typename T>
@@ -189,18 +172,15 @@ namespace recs
 	inline T* recs_registry::GetComponent(const Entity& entity)
 	{
 		T* compArray = m_componentRegistry.GetComponentArray<T>();
-		if (compArray == Null_Entity)
-			return Null_Entity;
+		if (compArray == nullptr)
+			return nullptr;
 
-		std::vector<EntityLink>& linker = m_componentRegistry.GetEntityLinks<T>();
+		const Link& link = m_componentRegistry.GetEntityLink<T>();
 
-		for (auto& entityLink : linker)
-		{
-			if (entityLink.entity == entity)
-				return &compArray[entityLink.pos];
-		}
+		if (link.find(entity) == link.end())
+			return nullptr;
 
-		return Null_Entity;
+		return &compArray[link.at(entity)];
 	}
 
 	template<typename T>
@@ -210,13 +190,7 @@ namespace recs
 	}
 
 	template<typename T>
-	inline void recs_registry::RegisterComponent(const T& component)
-	{
-		m_componentRegistry.RegisterNewComponent(component, m_size);
-	}
-
-	template<typename T>
-	inline void recs_registry::RegisterComponent(const T& component, const size_t& size)
+	inline void recs_registry::RegisterComponent(const T& component, const size_t& size, const bool& shouldCopy)
 	{
 		// Not allowed to have more components than entities. Shrinking to m_size.
 		if (m_size < size)

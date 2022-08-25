@@ -10,13 +10,6 @@ enum class Event {
     OnSceneChange,
     DEFAULT
 };
-//
-//template <class... Ts>
-//void print_all(std::ostream& os, Ts const&... args) {
-//    ((os << args), ...);
-//    teste++;
-//    std::cout << teste << "\n";
-//}
 
 int main()
 {
@@ -41,7 +34,7 @@ int main()
     auto group = base.Group<HelloWriter, Test, Test2>();
     group.ForEach([&](const Entity& entity, HelloWriter& hello, Test& test, Test2& test2) {
 
-        std::cout << entity << "\n";
+		hello.test2 = test.test4 + test2.test3 + entity + test.test;
 
      });
 

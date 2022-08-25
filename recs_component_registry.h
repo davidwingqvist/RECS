@@ -21,7 +21,7 @@ namespace recs
 		void RegisterNewComponent();
 
 		template<typename T>
-		void RegisterNewComponent(const size_t& size);
+		void RegisterComponent(const size_t& size, const bool& shouldCopy = false);
 
 		template<typename T>
 		void RegisterNewComponent(const T& component, const size_t& size);
@@ -36,7 +36,7 @@ namespace recs
 		const std::vector<EntityLink>& GetEntityLinks();
 
 		template<typename T>
-		const std::unordered_map<Entity, size_t>& GetEntityLink() const;
+		const Link& GetEntityLink() const;
 
 		void UpdateAllComponents();
 
@@ -80,13 +80,21 @@ namespace recs
 	}
 
 	template<typename T>
-	inline void recs_component_registry::RegisterNewComponent(const size_t& size)
+	inline void recs_component_registry::RegisterComponent(const size_t& size, const bool& shouldCopy)
 	{
 		size_t type = typeid(T).hash_code();
 
-		// Component is already registered
 		if (m_componentArrays.find(type) != m_componentArrays.end())
-			return;
+		{
+			if (!shouldCopy)
+			{
+				m_componentArrays.erase(type);
+			}
+			else
+			{
+
+			}
+		}
 
 		m_componentArrays.insert({ type, std::make_shared<recs_component_array<T>>(size) });
 	}
@@ -133,7 +141,7 @@ namespace recs
 	}
 
 	template<typename T>
-	inline const std::unordered_map<Entity, size_t>& recs_component_registry::GetEntityLink() const
+	inline const Link& recs_component_registry::GetEntityLink() const
 	{
 		size_t type = typeid(T).hash_code();
 		

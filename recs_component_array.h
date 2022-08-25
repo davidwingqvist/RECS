@@ -22,7 +22,7 @@ namespace recs
 		std::queue<size_t> m_availableComponents;
 		std::vector<EntityLink> m_activeComponents;
 		std::unordered_map<size_t, Entity> m_posToEntity;
-		std::unordered_map<Entity, size_t> m_entityToPos;
+		Link m_entityToPos;
 		std::function<void(const Entity&, T&)> m_onCreateFunction;
 		std::function<void(const Entity&, T&)> m_onDestroyFunction;
 		std::function<void(const Entity&, T&)> m_onUpdateFunction;
@@ -74,7 +74,7 @@ namespace recs
 			m_onUpdateFunction = func;
 		}
 
-		const std::unordered_map<Entity, size_t>& GetEntityLink() const
+		const Link& GetEntityLink() const
 		{
 			return m_entityToPos;
 		}
@@ -92,7 +92,7 @@ namespace recs
 			if (m_entityToPos.find() != m_entityToPos.end())
 				return &m_components[m_entityToPos[entity]];
 			else
-				return Null_Entity;
+				return nullptr;
 		}
 
 		// Link a component to the chosen entity.
