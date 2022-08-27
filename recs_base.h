@@ -12,7 +12,7 @@
 	* Optimize groups.
 	* Create dynamic groups. -- These should be able to be saved, but might affect performance.
 	* Create "Duel" function. -- This one takes in two entities and double the components, it is meant to be an easy way to loop through each entity against each other.
-	* Allow re-registration of components. -- This is to allow resize of component arrays.
+	* Implement "ReplaceComponent".
 
 	Ideas:
 	* Limit some entities to not be looped through?
@@ -77,10 +77,22 @@ namespace recs
 		template<typename T>
 		T* AddComponent(const Entity& entity);
 
+		/*
+			Replace an already existing component with input to said entity.
+			If the entity didn't have said component then simply add it to the entity.
+		*/
+		template<typename T, typename... Args>
+		T* AddOrReplaceComponent(const Entity& entity, Args&&... args);
+
 
 		// Get specific component from an entity. Return nullptr if it doesn't exist.
 		template<typename T>
-		T* GetComponent(const Entity& entity);
+		T* GetComponent(const Entity& entity) const;
+
+
+		// Return a bool that indicates whether an entity contains said component.
+		template<typename T>
+		const bool HasComponent(const Entity& entity) const;
 
 
 		// Remove specific component from an entity.
@@ -147,7 +159,7 @@ namespace recs
 
 		// Get a group of specific components.
 		template<class... types>
-		recs_entity_group<types...> Group();
+		recs_entity_group<types...>&& Group();
 
 
 		/*
@@ -168,8 +180,17 @@ namespace recs
 		return m_componentRegistry.AddComponentToEntity<T>(entity);
 	}
 
+	template<typename T, typename ...Args>
+	inline T* recs_registry::AddOrReplaceComponent(const Entity& entity, Args&& ...args)
+	{
+		static_assert(sizeof...(Args) == 1, "Only one argument is allowed!");
+		assert(typeid(T).hash_code() != typeid(args).hash_code() && "The Component and Argument(s) didn't match.");
+
+		return NULL;
+	}
+
 	template<typename T>
-	inline T* recs_registry::GetComponent(const Entity& entity)
+	inline T* recs_registry::GetComponent(const Entity& entity) const
 	{
 		T* compArray = m_componentRegistry.GetComponentArray<T>();
 		if (compArray == nullptr)
@@ -181,6 +202,14 @@ namespace recs
 			return nullptr;
 
 		return &compArray[link.at(entity)];
+	}
+
+	template<typename T>
+	inline const bool recs_registry::HasComponent(const Entity& entity) const
+	{
+		T* comp = this->GetComponent<T>(entity);
+
+		return comp ? true : false;
 	}
 
 	template<typename T>
@@ -245,7 +274,7 @@ namespace recs
 	}
 
 	template<class ...types>
-	inline recs_entity_group<types...> recs_registry::Group()
+	inline recs_entity_group<types...>&& recs_registry::Group()
 	{
 		return std::move(recs_entity_group<types...>(this));
 	}

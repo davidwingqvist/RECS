@@ -21,7 +21,7 @@ namespace recs
 		void RegisterNewComponent();
 
 		template<typename T>
-		void RegisterComponent(const size_t& size, const bool& shouldCopy = false);
+		void RegisterComponent(const size_t& size);
 
 		template<typename T>
 		void RegisterNewComponent(const T& component, const size_t& size);
@@ -33,7 +33,7 @@ namespace recs
 		void RemoveComponentFromEntity(const Entity& entity);
 
 		template<typename T>
-		const std::vector<EntityLink>& GetEntityLinks();
+		const std::vector<EntityLink>& GetEntityLinks() const;
 
 		template<typename T>
 		const Link& GetEntityLink() const;
@@ -41,7 +41,7 @@ namespace recs
 		void UpdateAllComponents();
 
 		template<typename T>
-		T* GetComponentArray();
+		T* GetComponentArray() const;
 
 		void EntityRemoved(const Entity& entity);
 
@@ -72,29 +72,13 @@ namespace recs
 	{
 		size_t type = typeid(T).hash_code();
 
-		// Component is already registered
-		if (m_componentArrays.find(type) != m_componentArrays.end())
-			return;
-
 		m_componentArrays.insert({ type, std::make_shared<recs_component_array<T>>(DEFAULT_MAX_ENTITIES) });
 	}
 
 	template<typename T>
-	inline void recs_component_registry::RegisterComponent(const size_t& size, const bool& shouldCopy)
+	inline void recs_component_registry::RegisterComponent(const size_t& size)
 	{
 		size_t type = typeid(T).hash_code();
-
-		if (m_componentArrays.find(type) != m_componentArrays.end())
-		{
-			if (!shouldCopy)
-			{
-				m_componentArrays.erase(type);
-			}
-			else
-			{
-
-			}
-		}
 
 		m_componentArrays.insert({ type, std::make_shared<recs_component_array<T>>(size) });
 	}
@@ -133,7 +117,7 @@ namespace recs
 	}
 
 	template<typename T>
-	inline const std::vector<EntityLink>& recs_component_registry::GetEntityLinks()
+	inline const std::vector<EntityLink>& recs_component_registry::GetEntityLinks() const
 	{
 		size_t type = typeid(T).hash_code();
 
@@ -149,7 +133,7 @@ namespace recs
 	}
 
 	template<typename T>
-	inline T* recs_component_registry::GetComponentArray()
+	inline T* recs_component_registry::GetComponentArray() const
 	{
 		size_t type = typeid(T).hash_code();
 

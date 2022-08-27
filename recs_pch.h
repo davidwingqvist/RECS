@@ -28,6 +28,7 @@ namespace recs
 	using Entity = std::uint32_t;
 	using Entity_Group = std::vector<Entity>;
 	using Link = std::unordered_map<Entity, size_t>;
+
 	constexpr Entity DEFAULT_MAX_ENTITIES = 2500;
 
 	struct EntityLink

@@ -29,6 +29,8 @@ int main()
 
     }
 
+	base.RunEvent<Event, Event::OnSceneChange>();
+
     double start = omp_get_wtime();
 
     auto group = base.Group<HelloWriter, Test, Test2>();

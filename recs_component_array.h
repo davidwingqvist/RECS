@@ -127,13 +127,13 @@ namespace recs
 		}
 
 		// Get a pointer towards the raw array.
-		T* GetArray()
+		T* GetArray() const
 		{
 			return m_components;
 		}
 
 		// Return a vector of registered entities to the component array.
-		const std::vector<EntityLink>& GetRegisteredComponents()
+		const std::vector<EntityLink>& GetRegisteredComponents() const
 		{
 			return m_activeComponents;
 		}
@@ -159,7 +159,7 @@ namespace recs
 				}
 			}
 
-			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity that doesn't have said component.\n";
+			std::cout << "RECS [WARNING!]: Tried to remove a component from an entity: " << entity << " that doesn't have said component.\n";
 		}
 
 		// Call the update function of each component that is used by an entity.
