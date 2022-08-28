@@ -81,9 +81,15 @@ namespace recs
 			Replace an already existing component with input to said entity.
 			If the entity didn't have said component then simply add it to the entity.
 		*/
-		template<typename T, typename... Args>
-		T* AddOrReplaceComponent(const Entity& entity, Args&&... args);
+		template<typename T>
+		T* AddOrReplaceComponent(const Entity& entity, const T& component);
 
+		/*
+			Replaces said component from input entity.
+			If it didn't exist on the entity then a nullptr will be returned.
+		*/
+		template<typename T>
+		T* ReplaceComponent(const Entity& entity, const T& component);
 
 		// Get specific component from an entity. Return nullptr if it doesn't exist.
 		template<typename T>
@@ -180,13 +186,16 @@ namespace recs
 		return m_componentRegistry.AddComponentToEntity<T>(entity);
 	}
 
-	template<typename T, typename ...Args>
-	inline T* recs_registry::AddOrReplaceComponent(const Entity& entity, Args&& ...args)
+	template<typename T>
+	inline T* recs_registry::AddOrReplaceComponent(const Entity& entity, const T& component)
 	{
-		static_assert(sizeof...(Args) == 1, "Only one argument is allowed!");
-		assert(typeid(T).hash_code() != typeid(args).hash_code() && "The Component and Argument(s) didn't match.");
+		return m_componentRegistry.AddOrReplaceComponent<T>(entity, component);
+	}
 
-		return NULL;
+	template<typename T>
+	inline T* recs_registry::ReplaceComponent(const Entity& entity, const T& component)
+	{
+		return m_componentRegistry.ReplaceComponent<T>(entity, component);
 	}
 
 	template<typename T>

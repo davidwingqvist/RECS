@@ -120,6 +120,50 @@ namespace recs
 			return &m_components[pos];
 		}
 
+		template<typename T>
+		T* LinkComponentToEntity(const Entity& entity, const T& component)
+		{
+
+			if (m_entityToPos.find(entity) != m_entityToPos.end())
+			{
+				// Replace the component.
+				m_components[m_entityToPos.at(entity)] = component;
+
+
+				return &m_components[m_entityToPos.at(entity)];
+			}
+
+			// Add the component.
+			const size_t pos = m_availableComponents.front();
+			m_availableComponents.pop();
+
+			EntityLink newLink = { entity, pos };
+			m_activeComponents.push_back(newLink);
+
+			m_posToEntity[pos] = entity;
+			m_entityToPos[entity] = pos;
+
+			if (m_onCreateFunction)
+				m_onCreateFunction(entity, m_components[pos]);
+
+			return &m_components[pos];
+		}
+
+		template<typename T>
+		T* ReplaceComponentToEntity(const Entity& entity, const T& component)
+		{
+			if (m_entityToPos.find(entity) != m_entityToPos.end())
+			{
+				// Replace the component.
+				m_components[m_entityToPos.at(entity)] = component;
+
+
+				return &m_components[m_entityToPos.at(entity)];
+			}
+
+			return nullptr;
+		}
+
 		// Return the size of the component array.
 		const size_t& GetSize() const
 		{

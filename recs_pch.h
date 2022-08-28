@@ -43,6 +43,16 @@ namespace recs
 		double test = 0;
 		double test2 = 0;
 		double test3 = 0;
+
+		HelloWriter()
+		{
+
+		}
+
+		HelloWriter(double test)
+		{
+			this->test = test;
+		}
 	};
 
 	struct Test

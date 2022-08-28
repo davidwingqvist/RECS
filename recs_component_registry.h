@@ -30,6 +30,12 @@ namespace recs
 		T* AddComponentToEntity(const Entity& entity);
 
 		template<typename T>
+		T* AddOrReplaceComponent(const Entity& entity, const T& component);
+
+		template<typename T>
+		T* ReplaceComponent(const Entity& entity, const T& component);
+
+		template<typename T>
 		void RemoveComponentFromEntity(const Entity& entity);
 
 		template<typename T>
@@ -106,6 +112,22 @@ namespace recs
 		}
 
 		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->LinkComponentToEntity<T>(entity);
+	}
+
+	template<typename T>
+	inline T* recs_component_registry::AddOrReplaceComponent(const Entity& entity, const T& component)
+	{
+		size_t type = typeid(T).hash_code();
+
+		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->LinkComponentToEntity<T>(entity, component);
+	}
+
+	template<typename T>
+	inline T* recs_component_registry::ReplaceComponent(const Entity& entity, const T& component)
+	{
+		size_t type = typeid(T).hash_code();
+
+		return dynamic_cast<recs_component_array<T>*>(m_componentArrays.at(type).get())->ReplaceComponentToEntity<T>(entity, component);
 	}
 
 	template<typename T>
