@@ -111,7 +111,7 @@ namespace recs
 
 		// Register component with DEFAULT_MAX_ENTITIES size as default size.
 		template<typename T>
-		void RegisterComponent(const T& component, const size_t& size = DEFAULT_MAX_ENTITIES, const bool& shouldCopy = false);
+		void RegisterComponent(const size_t& size = DEFAULT_MAX_ENTITIES, const bool& shouldCopy = false);
 
 		// Register an event that can be called with the RunEvent() function.
 		template<typename T, T eventType>
@@ -154,7 +154,7 @@ namespace recs
 
 		// Get a group of specific components.
 		template<class... types>
-		recs_entity_group<types...>&& Group();
+		recs_entity_group<types...> Group();
 
 
 		/*
@@ -217,17 +217,17 @@ namespace recs
 	}
 
 	template<typename T>
-	inline void recs_registry::RegisterComponent(const T& component, const size_t& size, const bool& shouldCopy)
+	inline void recs_registry::RegisterComponent(const size_t& size, const bool& shouldCopy)
 	{
 		// Not allowed to have more components than entities. Shrinking to m_size.
 		if (m_size < size)
 		{
-			m_componentRegistry.RegisterNewComponent(component, m_size);
+			m_componentRegistry.RegisterComponent<T>(m_size);
 			std::cout << "RECS [NOTICE]: Size was higher than available entities, size was adjusted to: " << m_size << " components.\n";
 			return;
 		}
 
-		m_componentRegistry.RegisterNewComponent(component, size);
+		m_componentRegistry.RegisterComponent<T>(size);
 	}
 
 	template<typename T>
@@ -261,7 +261,7 @@ namespace recs
 	}
 
 	template<class ...types>
-	inline recs_entity_group<types...>&& recs_registry::Group()
+	inline recs_entity_group<types...> recs_registry::Group()
 	{
 		return std::move(recs_entity_group<types...>(this));
 	}
@@ -332,7 +332,7 @@ namespace recs
 			m_pos = p_value;
 		}
 
-		virtual const size_t GetSize() const noexcept
+		virtual const size_t Size() const noexcept
 		{
 			return m_linker.size();
 		}
@@ -385,10 +385,10 @@ namespace recs
 		Link const* GetLowestLink()
 		{
 			size_t size = 9999999;
-			((size > dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() ? size = dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() : size = size), ...);
+			((size > dynamic_cast<recs_entity_handle<views>*>(this)->Size() ? size = dynamic_cast<recs_entity_handle<views>*>(this)->Size() : size = size), ...);
 
 			Link const* link = nullptr;
-			((size == dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() ? link = &dynamic_cast<recs_entity_handle<views>*>(this)->GetLink() : link = link), ...);
+			((size == dynamic_cast<recs_entity_handle<views>*>(this)->Size() ? link = &dynamic_cast<recs_entity_handle<views>*>(this)->GetLink() : link = link), ...);
 
 			assert(link != nullptr && "RECS [ASSERT ERROR]: Couldn't find the lowest link.");
 
@@ -410,7 +410,7 @@ namespace recs
 					group.push_back(link.first);
 			}
 
-			return std::move(group);
+			return group;
 		}
 
 	public:
@@ -419,6 +419,7 @@ namespace recs
 			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views)), m_list(this->GenerateList())
 		{
 			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Groups needs to be more than one.");
+			std::cout << "List is now: " << m_list.size() << " size\n";
 		}
 
 		/*
@@ -429,6 +430,8 @@ namespace recs
 		void ForEach(const std::function<void(views&...)>& func) noexcept
 		{
 			//Link const* linker = this->GetLowestLink();
+
+			std::cout << "List is now: " << m_list.size() << " size\n";
 
 			for(auto& entity : m_list)
 				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
@@ -446,14 +449,9 @@ namespace recs
 				func(entity, dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
 		}
 
-		const size_t GetSize() noexcept
+		const size_t Size() noexcept
 		{
-			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Group needs to be more than one.");
-
-			size_t size = 9999999;
-			((size > dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() ? size = dynamic_cast<recs_entity_handle<views>*>(this)->GetSize() : size = size), ...);
-
-			return size;
+			return m_list.size();
 		}
 
 		void Next() const
