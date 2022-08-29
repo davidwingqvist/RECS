@@ -419,7 +419,6 @@ namespace recs
 			:recs_entity_handle<views>(registry)..., m_amount(sizeof...(views)), m_list(this->GenerateList())
 		{
 			static_assert(sizeof...(views) > 1, "RECS [ASSERT ERROR]: Groups needs to be more than one.");
-			std::cout << "List is now: " << m_list.size() << " size\n";
 		}
 
 		/*
@@ -430,8 +429,6 @@ namespace recs
 		void ForEach(const std::function<void(views&...)>& func) noexcept
 		{
 			//Link const* linker = this->GetLowestLink();
-
-			std::cout << "List is now: " << m_list.size() << " size\n";
 
 			for(auto& entity : m_list)
 				func(dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
