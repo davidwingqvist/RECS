@@ -36,40 +36,6 @@ namespace recs
 		Entity entity;
 		size_t pos;
 	};
-
-	struct HelloWriter
-	{
-		int hello = 0;
-		double test = 0;
-		double test2 = 0;
-		double test3 = 0;
-
-		HelloWriter()
-		{
-
-		}
-
-		HelloWriter(double test)
-		{
-			this->test = test;
-		}
-	};
-
-	struct Test
-	{
-		int test = 0;
-		double test2 = 0;
-		double test3 = 0;
-		double test4 = 0;
-	};
-
-	struct Test2
-	{
-		int test = 0;
-		double test2 = 0;
-		double test3 = 0;
-		double test4 = 0;
-	};
 }
 
 #endif //PCH_H

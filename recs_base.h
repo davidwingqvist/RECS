@@ -12,7 +12,6 @@
 	* Optimize groups.
 	* Create dynamic groups. -- These should be able to be saved, but might affect performance.
 	* Create "Duel" function. -- This one takes in two entities and double the components, it is meant to be an easy way to loop through each entity against each other.
-	* Implement "ReplaceComponent".
 
 	Ideas:
 	* Limit some entities to not be looped through?
@@ -110,19 +109,9 @@ namespace recs
 		void DestroyEntity(const Entity& entity);
 
 
-		// Register component with DEFAULT_MAX_ENTITIES size.
+		// Register component with DEFAULT_MAX_ENTITIES size as default size.
 		template<typename T>
 		void RegisterComponent(const T& component, const size_t& size = DEFAULT_MAX_ENTITIES, const bool& shouldCopy = false);
-
-		// Register a component with DEFAULT_MAX_ENTITIES size, without triggering any constructors.
-		template<typename T>
-		void RegisterComponent();
-
-
-		// Register a component with own defined size, without triggering any constructors.
-		template<typename T>
-		void RegisterComponent(const size_t& size);
-
 
 		// Register an event that can be called with the RunEvent() function.
 		template<typename T, T eventType>
@@ -234,22 +223,11 @@ namespace recs
 		if (m_size < size)
 		{
 			m_componentRegistry.RegisterNewComponent(component, m_size);
+			std::cout << "RECS [NOTICE]: Size was higher than available entities, size was adjusted to: " << m_size << " components.\n";
 			return;
 		}
 
 		m_componentRegistry.RegisterNewComponent(component, size);
-	}
-
-	template<typename T>
-	inline void recs_registry::RegisterComponent()
-	{
-		m_componentRegistry.RegisterNewComponent<T>();
-	}
-
-	template<typename T>
-	inline void recs_registry::RegisterComponent(const size_t& size)
-	{
-		m_componentRegistry.RegisterNewComponent<T>(size);
 	}
 
 	template<typename T>
