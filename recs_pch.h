@@ -30,6 +30,7 @@ namespace recs
 	using Link = std::unordered_map<Entity, size_t>;
 
 	constexpr Entity DEFAULT_MAX_ENTITIES = 2500;
+	constexpr Entity NULL_ENTITY = UINT32_MAX;
 
 	struct EntityLink
 	{
