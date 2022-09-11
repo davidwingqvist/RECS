@@ -62,12 +62,35 @@ namespace recs
 	public:
 
 		// Creates a registry, allocated assigned(size) amount of entities.
-		recs_registry(const size_t& size = DEFAULT_MAX_ENTITIES);
+		recs_registry(const size_t& size = DEFAULT_MAX_ENTITIES)
+		{
+			m_size = size;
+			for (Entity i = 0; i < m_size; i++)
+			{
+				m_availableEntities.push(i);
+			}
+		}
 
-		~recs_registry();
+		~recs_registry()
+		{
+
+		}
 
 		// Generates an entity and outputs it. Another copy is stored inside.
-		Entity CreateEntity();
+		Entity CreateEntity()
+		{
+			if (m_availableEntities.empty())
+			{
+				std::cout << "RECS [Warning!]: Too many entities has been created! Undefined behavior will happen!" << std::endl;
+				return NULL_ENTITY;
+			}
+
+			const Entity entity = m_availableEntities.front();
+			m_activeEntities.push_back(entity);
+			m_availableEntities.pop();
+
+			return entity;
+		}
 
 		/*
 			Add a component to an entity, outputs a pointer to the newely created component.
@@ -106,7 +129,26 @@ namespace recs
 
 
 		// Destroy an entity and erase all the components from it.
-		void DestroyEntity(const Entity& entity);
+		void DestroyEntity(const Entity& entity)
+		{
+			m_componentRegistry.EntityRemoved(entity);
+			std::vector<Entity>::iterator it = std::find(m_activeEntities.begin(), m_activeEntities.end(), entity);
+
+			if (it != m_activeEntities.cend())
+			{
+				// Gets the position of the removed entity and removes it
+				ptrdiff_t dist = std::distance(m_activeEntities.begin(), it);
+				Entity freeEntity = m_activeEntities.at(dist);
+
+				// pushes it back into available entities.
+				m_availableEntities.push(freeEntity);
+				m_activeEntities.erase(it);
+			}
+			else
+			{
+				std::cout << "RECS: Non-existant entity: " << entity << " was attempted to be removed.\n";
+			}
+		}
 
 
 		// Register component with DEFAULT_MAX_ENTITIES size as default size.
@@ -145,7 +187,7 @@ namespace recs
 
 		// Get a view of a specific component.
 		template<typename T>
-		recs_entity_handle<T>&& View() noexcept
+		recs_entity_handle<T> View() noexcept
 		{
 			recs_entity_handle<T> view(this);
 
@@ -161,11 +203,24 @@ namespace recs
 		Call this function to initiate an update call to each component with 
 			a valid update function.
 		*/
-		void Update();
+		void Update()
+		{
+			m_componentRegistry.UpdateAllComponents();
+		}
 
 		recs_component_registry& GetComponentRegistry()
 		{
 			return m_componentRegistry;
+		}
+
+		/*
+			Set the number of threads that should be used for multithreaded functions.
+			Recommended amount is the same amount of cores available on the CPU.
+			RECS uses OpenMP threads to parallellize its functions, therefore be sure to activate OpenMP for compilation.
+		*/
+		void SetNumberOfThreads(unsigned int thread_nr = omp_get_max_threads())
+		{
+			recs_threads = thread_nr;
 		}
 	};
 
@@ -307,6 +362,10 @@ namespace recs
 		// loop through each component and execute the function.
 		virtual void ForEach(const std::function<void(T&)>&& func);
 
+		virtual void ForEach_mult(const std::function<void(T&)>&& func);
+
+		virtual void ForEach_mult(const std::function<void(const Entity&, T&)>&& func);
+
 		/*
 			Returns the value at pos, and will not increment the check value.
 		*/
@@ -368,6 +427,33 @@ namespace recs
 	{
 		for (auto& link : m_entityLinker)
 			func(m_componentArray[link.pos]);
+	}
+
+	template<typename T>
+	inline void recs_entity_handle<T>::ForEach_mult(const std::function<void(T&)>&& func)
+	{
+		int i = 0;
+		auto& linker_ref = m_entityLinker;
+		T* comp_ref = m_componentArray;
+		#pragma omp parallel for schedule(static) private(i) shared(linker_ref, comp_ref) num_threads(recs_threads)
+		for (i = 0; i < (int)m_entityLinker.size(); i++)
+		{
+			func(comp_ref[linker_ref[i].pos]);
+		}
+	}
+
+	template<typename T>
+	inline void recs_entity_handle<T>::ForEach_mult(const std::function<void(const Entity&, T&)>&& func)
+	{
+		int i = 0;
+		auto& linker_ref = m_entityLinker;
+		T* comp_ref = m_componentArray;
+
+		#pragma omp parallel for schedule(static) private(i) shared(linker_ref, comp_ref) num_threads(recs_threads)
+		for (i = 0; i < (int)m_entityLinker.size(); i++)
+		{
+			func(linker_ref[i].entity, comp_ref[linker_ref[i].pos]);
+		}
 	}
 
 	/*
@@ -444,6 +530,17 @@ namespace recs
 
 			for (auto& entity : m_list)
 				func(entity, dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
+		}
+
+		void ForEach_mult(const std::function<void(const Entity&, views&...)>& func) noexcept
+		{
+			int i = 0;
+			#pragma omp parallel for schedule(static) private(i) num_threads(recs_threads)
+			for (i = 0; i < (int)m_list.size(); i++)
+			{
+				const Entity& entity = m_list[i];
+				func(entity, dynamic_cast<recs_entity_handle<views>*>(this)->Next(entity)...);
+			}
 		}
 
 		const size_t Size() noexcept

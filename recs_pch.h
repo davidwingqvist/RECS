@@ -21,7 +21,7 @@
 #include <tuple>
 #include <type_traits>
 #include <cassert>
-
+#include <omp.h>
 
 namespace recs
 {
@@ -29,8 +29,9 @@ namespace recs
 	using Entity_Group = std::vector<Entity>;
 	using Link = std::unordered_map<Entity, size_t>;
 
-	constexpr Entity DEFAULT_MAX_ENTITIES = 2500;
+	constexpr Entity DEFAULT_MAX_ENTITIES = 5000;
 	constexpr Entity NULL_ENTITY = UINT32_MAX;
+	unsigned int recs_threads = 1;
 
 	struct EntityLink
 	{
