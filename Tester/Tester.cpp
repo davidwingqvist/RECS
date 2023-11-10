@@ -1,22 +1,32 @@
-#include <recs_base.h>
+#include <../../../recs_base.h>
 #include <omp.h>
 #include <iostream>
 
 //using namespace recs;
 
+struct Test
+{
+    int i;
+};
 
 int main()
 {
-    //recs::recs_registry base;
+    recs::recs_registry base;
 
-    //for (Entity i = 0; i < DEFAULT_MAX_ENTITIES; i++)
-    //{
-    //    recs::Entity entity = base.CreateEntity();
-    //}
+    for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
+    {
+        recs::Entity entity = base.CreateEntity();
+        base.AddComponent<Test>(entity)->i = i;
+    }
 
-    //double start = omp_get_wtime();
+    for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
+    {
+        std::cout << base.GetComponent<Test>(i)->i << std::endl;
+    }
 
-    //double end = omp_get_wtime() - start;
-    //std::cout << "Time: " << end << "\n";
+    double start = omp_get_wtime();
+
+    double end = omp_get_wtime() - start;
+    std::cout << "Time: " << end << "\n";
 
 }
