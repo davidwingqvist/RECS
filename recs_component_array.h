@@ -17,7 +17,8 @@ namespace recs
 	{
 	private:
 
-		T* m_components;
+		std::vector<T> m_components;
+		//T* m_components;
 		size_t m_size = DEFAULT_MAX_ENTITIES;
 		std::queue<size_t> m_availableComponents;
 		std::vector<EntityLink> m_activeComponents;
@@ -31,7 +32,8 @@ namespace recs
 
 		recs_component_array()
 		{
-			m_components = new T[m_size];
+			m_components = std::vector<T>(m_size, T());
+			//m_components = new T[m_size];
 			for (size_t i = 0; i < m_size; i++)
 			{
 				m_availableComponents.push(i);
@@ -42,7 +44,8 @@ namespace recs
 		recs_component_array(const size_t& size)
 		{
 			m_size = size;
-			m_components = new T[m_size];
+			m_components = std::vector<T>(m_size, T());
+			//m_components = new T[m_size];
 			for (size_t i = 0; i < m_size; i++)
 			{
 				m_availableComponents.push(i);
@@ -52,8 +55,8 @@ namespace recs
 
 		~recs_component_array()
 		{
-			if (m_components)
-				delete m_components;
+			//if (m_components)
+			//	delete m_components;
 		}
 
 		// Assign an on create function that is called each time a component is created.
@@ -173,7 +176,7 @@ namespace recs
 		// Get a pointer towards the raw array.
 		T* GetArray() const
 		{
-			return m_components;
+			return const_cast<T*>(&m_components.front());
 		}
 
 		// Return a vector of registered entities to the component array.

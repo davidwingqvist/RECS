@@ -6,7 +6,7 @@
 
 struct Test
 {
-    int i;
+    std::string i = "test\n";
 };
 
 int main()
@@ -16,7 +16,7 @@ int main()
     for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
-        base.AddComponent<Test>(entity)->i = i;
+        base.AddComponent<Test>(entity);
     }
 
     for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
