@@ -6,7 +6,12 @@
 
 struct Test
 {
-    std::string i = "test\n";
+    std::string i = "";
+};
+
+struct Test2
+{
+    int i = 0;
 };
 
 int main()
@@ -16,13 +21,18 @@ int main()
     for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
-        base.AddComponent<Test>(entity);
+        base.AddComponent<Test>(entity)->i = "Number is: " + std::to_string(i);
+        base.AddComponent<Test2>(entity)->i = i;
+
     }
 
-    for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
-    {
-        std::cout << base.GetComponent<Test>(i)->i << std::endl;
-    }
+    
+
+    base.View<Test>().ForEach([](Test& test) {
+
+        std::cout << test.i << "\n";
+
+        });
 
     double start = omp_get_wtime();
 

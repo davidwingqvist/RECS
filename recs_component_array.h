@@ -174,9 +174,9 @@ namespace recs
 		}
 
 		// Get a pointer towards the raw array.
-		T* GetArray() const
+		T* GetArray()
 		{
-			return const_cast<T*>(&m_components.front());
+			return &m_components[0];
 		}
 
 		// Return a vector of registered entities to the component array.

@@ -287,7 +287,7 @@ namespace recs
 		const Link& m_linker;
 		const std::vector<EntityLink>& m_entityLinker;
 		unsigned short m_pos = 0;
-		T* m_componentArray = nullptr;
+		T* m_componentArray;
 
 	public:
 
@@ -312,7 +312,6 @@ namespace recs
 		*/
 		virtual T& Next(const Entity& entity)
 		{
-			//std::cout << entity << "\n";
 			return m_componentArray[m_linker.at(entity)];
 		}
 
@@ -359,15 +358,25 @@ namespace recs
 	template<typename T>
 	inline void recs_entity_handle<T>::ForEach(const std::function<void(const Entity&, T&)>&& func)
 	{
-		for (auto& link : m_entityLinker)
-			func(link.entity, m_componentArray[link.pos]);
+		for (int i = 0; i < m_entityLinker.size(); i++)
+		{
+			func(m_entityLinker[i].entity, m_componentArray[m_entityLinker[i].pos]);
+		}
+
+		//for (auto& link : m_entityLinker)
+		//	func(link.entity, m_componentArray[link.pos]);
 	}
 
 	template<typename T>
 	inline void recs_entity_handle<T>::ForEach(const std::function<void(T&)>&& func)
 	{
-		for (auto& link : m_entityLinker)
-			func(m_componentArray[link.pos]);
+		for (int i = 0; i < m_entityLinker.size(); i++)
+		{
+			func(m_componentArray[m_entityLinker[i].pos]);
+		}
+
+		//for (auto& link : m_entityLinker)
+		//	func(m_componentArray[link.pos]);
 	}
 
 	/*
