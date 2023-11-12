@@ -53,3 +53,8 @@ void recs::recs_registry::Update()
 {
 	m_componentRegistry.UpdateAllComponents();
 }
+
+void recs::recs_registry::Pool(const size_t& numThreads)
+{
+	m_threadpool.Initialize(numThreads);
+}

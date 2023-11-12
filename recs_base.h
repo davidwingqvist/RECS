@@ -4,6 +4,7 @@
 #include "recs_component_registry.h"
 #include "recs_component_array.h"
 #include "recs_event_handler.h"
+#include "recs_thread.h"
 
 
 /*
@@ -39,6 +40,8 @@ namespace recs
 		std::queue<recs::Entity> m_availableEntities;
 		std::vector<Entity> m_activeEntities;
 		recs_component_registry m_componentRegistry;
+		recs_thread_pool m_threadpool;
+		
 
 		/*
 			Storage of all different types of events.
@@ -167,6 +170,11 @@ namespace recs
 		{
 			return m_componentRegistry;
 		}
+
+		/*
+			Starts a pool of numThreads amount of threads.
+		*/
+		void Pool(const size_t& numThreads = std::thread::hardware_concurrency() - 1);
 	};
 
 	template<typename T>
