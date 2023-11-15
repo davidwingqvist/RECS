@@ -103,12 +103,16 @@ namespace recs
 		const bool HasComponent(const Entity& entity) const;
 
 
-		// Remove specific component from an entity.
+		/*
+			Remove specific component from an entity.
+		*/
 		template<typename T>
 		void RemoveComponent(const Entity& entity);
 
 
-		// Destroy an entity and erase all the components from it.
+		/* Destroy an entityand erase all the components from it.
+		*  This function is slow, so try to avoid it.
+		*/
 		void DestroyEntity(const Entity& entity);
 
 

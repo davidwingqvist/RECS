@@ -21,6 +21,7 @@ int main()
     for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
+        base.AddComponent<Test>(entity);
     }
 
     double start = omp_get_wtime();

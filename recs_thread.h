@@ -23,6 +23,7 @@ namespace recs
 
 		recs_thread* m_threads;
 		bool m_running = false;
+		size_t m_amountOfThreads = 0;
 
 	public:
 
@@ -33,7 +34,7 @@ namespace recs
 		void Initialize(const size_t& numThreads = std::thread::hardware_concurrency() - 1);
 
 		// Return the run status of pool system.
-		const bool& GetRunStatus();
+		const bool& GetRunStatus() const;
 
 	};
 
@@ -53,6 +54,10 @@ namespace recs
 
 		void CreatePooled(recs_thread_pool* control);
 
-		void PoolMain();
+		//void PoolMain();
+
+		const recs_thread_status& GetStatus() const;
+		void SetStatus(const recs_thread_status& status);
+		recs_thread_pool* GetPool() const;
 	};
 }
