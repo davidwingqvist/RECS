@@ -394,21 +394,21 @@ namespace recs
 	{
 		int i = 0;
 
-		//if (m_useOpenMP)
-		//{
-		#pragma omp for schedule(static) private(i)
-		for (i = 0; i < m_entityLinker.size(); i++)
+		if (m_useOpenMP)
 		{
-			func(m_componentArray[m_entityLinker[i].pos]);
+			#pragma omp parallel for schedule(static) private(i)
+			for (i = 0; i < m_entityLinker.size(); i++)
+			{
+				func(m_componentArray[m_entityLinker[i].pos]);
+			}
 		}
-		//}
-		//else
-		//{
-		//	for (i = 0; i < m_entityLinker.size(); i++)
-		//	{
-		//		func(m_componentArray[m_entityLinker[i].pos]);
-		//	}
-		//}
+		else
+		{
+			for (i = 0; i < m_entityLinker.size(); i++)
+			{
+				func(m_componentArray[m_entityLinker[i].pos]);
+			}
+		}
 	}
 
 	/*
