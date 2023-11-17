@@ -58,3 +58,13 @@ void recs::recs_registry::Pool(const size_t& numThreads)
 {
 	m_threadpool.Initialize(numThreads);
 }
+
+void recs::recs_registry::UseOpenMP(const bool& boolean)
+{
+	m_useOpenMp = boolean;
+}
+
+const bool& recs::recs_registry::IsUsingOpenMP() const
+{
+	return m_useOpenMp;
+}

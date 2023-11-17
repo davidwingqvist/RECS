@@ -1,5 +1,6 @@
 #pragma once
 #include <thread>
+#include <functional>
 
 namespace recs
 {
@@ -13,6 +14,12 @@ namespace recs
 		PAUSED = 3
 	};
 
+	struct recs_thread_job_data
+	{
+		const std::vector<EntityLink>& entityLink;
+		void* componentArray;
+	};
+
 	/*
 		This is a thread pool class that is recommended
 		to use if continually creating and destroying threads is degrading performance.
@@ -22,8 +29,12 @@ namespace recs
 	private:
 
 		recs_thread* m_threads;
-		bool m_running = false;
+		bool m_running = true;
 		size_t m_amountOfThreads = 0;
+		bool m_isActive = false;
+
+
+		std::vector<std::function<void(Entity, void*)>> m_queue;
 
 	public:
 
@@ -33,8 +44,17 @@ namespace recs
 
 		void Initialize(const size_t& numThreads = std::thread::hardware_concurrency() - 1);
 
-		// Return the run status of pool system.
+		// Returns the run status of pool system.
 		const bool& GetRunStatus() const;
+
+		// Returns true if pool has been activated.
+		const bool& GetActive() const;
+
+		void AddToQueue(std::function<void(Entity, void*)> func);
+
+		std::function<void(Entity, void*)> FetchJob();
+
+
 
 	};
 

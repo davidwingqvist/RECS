@@ -34,6 +34,7 @@ namespace recs
 		m_threads = new recs_thread[numThreads];
 		m_amountOfThreads = numThreads;
 		m_running = false;
+		m_isActive = true;
 
 		for (size_t i = 0; i < numThreads; i++)
 		{
@@ -48,15 +49,25 @@ namespace recs
 		return m_running;
 	}
 
-	//void recs_thread::PoolMain()
-	//{
-	//	m_status = RUNNING;
-	//	while (m_pool->GetRunStatus())
-	//	{
+	const bool& recs_thread_pool::GetActive() const
+	{
+		return m_isActive;
+	}
 
-	//	}
-	//	m_status = STOPPED;
-	//}
+	void recs_thread_pool::AddToQueue(std::function<void(Entity, void*)> func)
+	{
+		// Todo: Add thread lock
+
+		m_queue.push_back(func);
+
+	}
+
+	std::function<void(Entity, void*)> recs_thread_pool::FetchJob()
+	{
+		// Todo: Add check if job is ready.
+
+		return nullptr;
+	}
 
 	const recs_thread_status& recs_thread::GetStatus() const
 	{
@@ -83,7 +94,12 @@ namespace recs
 		thread->SetStatus(RUNNING);
 		while (thread->GetPool()->GetRunStatus())
 		{
-			
+			std::function<void(Entity, void*)> job = nullptr;
+
+			if (job)
+			{
+
+			}
 		}
 		thread->SetStatus(STOPPED);
 	}

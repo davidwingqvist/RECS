@@ -21,14 +21,20 @@ int main()
     for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
     {
         recs::Entity entity = base.CreateEntity();
-        base.AddComponent<Test>(entity);
+        base.AddComponent<Test>(entity)->i = std::to_string(i) + "\n";
     }
+
+    base.UseOpenMP(true);
 
     double start = omp_get_wtime();
 
-    base.Pool();
+
+    base.View<Test>().ForEach([](Test& test) {
+
+        std::cout << test.i;
+
+        });
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
-
 }

@@ -21,6 +21,7 @@
 #include <tuple>
 #include <type_traits>
 #include <cassert>
+#include <omp.h>
 
 
 namespace recs

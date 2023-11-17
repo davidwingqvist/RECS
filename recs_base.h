@@ -41,6 +41,7 @@ namespace recs
 		std::vector<Entity> m_activeEntities;
 		recs_component_registry m_componentRegistry;
 		recs_thread_pool m_threadpool;
+		bool m_useOpenMp = false;
 		
 
 		/*
@@ -179,6 +180,16 @@ namespace recs
 			Starts a pool of numThreads amount of threads.
 		*/
 		void Pool(const size_t& numThreads = std::thread::hardware_concurrency() - 1);
+
+		/*
+			Activates OpenMP support for View and Group function
+		*/
+		void UseOpenMP(const bool& boolean);
+
+		/*
+			Check if the registry is currently using OpenMP
+		*/
+		const bool& IsUsingOpenMP() const;
 	};
 
 	template<typename T>
@@ -300,6 +311,7 @@ namespace recs
 		const std::vector<EntityLink>& m_entityLinker;
 		unsigned short m_pos = 0;
 		T* m_componentArray;
+		bool m_useOpenMP = false;
 
 	public:
 
@@ -307,6 +319,7 @@ namespace recs
 			: m_linker(registry->GetComponentRegistry().GetEntityLink<T>()), m_componentArray(registry->GetComponentRegistry().GetComponentArray<T>()), m_entityLinker(registry->GetComponentRegistry().GetEntityLinks<T>())
 		{
 			m_pos = 0;
+			m_useOpenMP = registry->IsUsingOpenMP();
 		}
 
 		/*
@@ -374,21 +387,28 @@ namespace recs
 		{
 			func(m_entityLinker[i].entity, m_componentArray[m_entityLinker[i].pos]);
 		}
-
-		//for (auto& link : m_entityLinker)
-		//	func(link.entity, m_componentArray[link.pos]);
 	}
 
 	template<typename T>
 	inline void recs_entity_handle<T>::ForEach(const std::function<void(T&)>&& func)
 	{
-		for (int i = 0; i < m_entityLinker.size(); i++)
+		int i = 0;
+
+		//if (m_useOpenMP)
+		//{
+		#pragma omp for schedule(static) private(i)
+		for (i = 0; i < m_entityLinker.size(); i++)
 		{
 			func(m_componentArray[m_entityLinker[i].pos]);
 		}
-
-		//for (auto& link : m_entityLinker)
-		//	func(m_componentArray[link.pos]);
+		//}
+		//else
+		//{
+		//	for (i = 0; i < m_entityLinker.size(); i++)
+		//	{
+		//		func(m_componentArray[m_entityLinker[i].pos]);
+		//	}
+		//}
 	}
 
 	/*
