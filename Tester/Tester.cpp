@@ -14,6 +14,11 @@ struct Test2
     int i = 0;
 };
 
+struct Test3
+{
+    const char* i = "";
+};
+
 int main()
 {
     recs::recs_registry base;
@@ -22,9 +27,9 @@ int main()
     {
         recs::Entity entity = base.CreateEntity();
         base.AddComponent<Test2>(entity)->i = i;
+        base.AddComponent<Test>(entity)->i = "s";
+        base.AddComponent<Test3>(entity);
     }
-
-    //base.UseOpenMP(true);
 
     double start = omp_get_wtime();
 

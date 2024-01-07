@@ -153,11 +153,11 @@ namespace recs
 
 		// Get a view of a specific component.
 		template<typename T>
-		recs_entity_handle<T>&& View() noexcept
+		recs_entity_handle<T> View() noexcept
 		{
 			recs_entity_handle<T> view(this);
 
-			return std::move(view);
+			return view;
 		}
 
 		// Get a group of specific components.
@@ -190,6 +190,11 @@ namespace recs
 			Check if the registry is currently using OpenMP
 		*/
 		const bool& IsUsingOpenMP() const;
+
+		/*
+			Return a vector of all active entities.
+		*/
+		const std::vector<Entity>& GetEntities() const;
 	};
 
 	template<typename T>
