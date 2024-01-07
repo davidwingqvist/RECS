@@ -164,6 +164,7 @@
     <ClInclude Include="recs_event_handler.h" />
     <ClInclude Include="recs_pch.h" />
     <ClInclude Include="recs_base.h" />
+    <ClInclude Include="recs_state_handler.h" />
     <ClInclude Include="recs_thread.h" />
     <ClInclude Include="recs_utility.h" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     </ClCompile>
     <ClCompile Include="RECS.cpp" />
     <ClCompile Include="recs_base.cpp" />
+    <ClCompile Include="recs_state_handler.cpp" />
     <ClCompile Include="recs_thread.cpp" />
     <ClCompile Include="recs_utility.cpp" />
   </ItemGroup>

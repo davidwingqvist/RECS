@@ -28,6 +28,9 @@
     <Filter Include="Events">
       <UniqueIdentifier>{d12b653d-d5b3-4a51-8b70-d3bcd4a6ffb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{99171bdc-00c5-4bba-a4a1-7cf7b37e81a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -57,6 +60,9 @@
     <ClInclude Include="recs_event_handler.h">
       <Filter>Events</Filter>
     </ClInclude>
+    <ClInclude Include="recs_state_handler.h">
+      <Filter>State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RECS.cpp">
@@ -82,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="recs_event_handler.cpp">
       <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="recs_state_handler.cpp">
+      <Filter>State</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

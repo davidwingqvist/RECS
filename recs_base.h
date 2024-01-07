@@ -5,6 +5,7 @@
 #include "recs_component_array.h"
 #include "recs_event_handler.h"
 #include "recs_thread.h"
+#include "recs_state_handler.h"
 
 
 /*
@@ -42,6 +43,7 @@ namespace recs
 		recs_component_registry m_componentRegistry;
 		recs_thread_pool m_threadpool;
 		bool m_useOpenMp = false;
+		recs_state_handler m_stateHandler;
 		
 
 		/*
@@ -195,6 +197,16 @@ namespace recs
 			Return a vector of all active entities.
 		*/
 		const std::vector<Entity>& GetEntities() const;
+
+		/*
+			Save the active state of the registry.
+		*/
+		void SaveState();
+
+		/*
+			Load saved state of registry.
+		*/
+		void LoadState();
 	};
 
 	template<typename T>

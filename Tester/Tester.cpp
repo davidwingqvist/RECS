@@ -33,12 +33,7 @@ int main()
 
     double start = omp_get_wtime();
 
-
-    base.View<Test2>().ForEach([](Test2& test) {
-
-        ++test.i;
-
-        });
+    base.SaveEntities();
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
