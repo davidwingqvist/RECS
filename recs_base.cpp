@@ -77,7 +77,6 @@ const std::vector<recs::Entity>& recs::recs_registry::GetEntities() const
 
 void recs::recs_registry::SaveState()
 {
-	m_stateHandler.SaveAllEntitiesToFile();
 }
 
 void recs::recs_registry::LoadState()

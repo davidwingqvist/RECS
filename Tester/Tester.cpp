@@ -23,7 +23,7 @@ int main()
 {
     recs::recs_registry base;
 
-    for (recs::Entity i = 0; i < recs::DEFAULT_MAX_ENTITIES; i++)
+    for (recs::Entity i = 0; i < 450; i++)
     {
         recs::Entity entity = base.CreateEntity();
         base.AddComponent<Test2>(entity)->i = i;
@@ -32,8 +32,6 @@ int main()
     }
 
     double start = omp_get_wtime();
-
-    base.SaveEntities();
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";

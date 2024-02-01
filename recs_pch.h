@@ -38,6 +38,8 @@ namespace recs
 		Entity entity;
 		size_t pos;
 	};
+
+	constexpr Entity NULL_ENTITY = -1;
 }
 
 #endif //PCH_H

@@ -17,6 +17,7 @@
 
 	Ideas:
 	* Limit some entities to not be looped through?
+	* Remove ability to adjust size of component arrays. [Make it faster, with the draw back of more memory being used.]
 */
 
 namespace recs
@@ -104,6 +105,9 @@ namespace recs
 		// Return a bool that indicates whether an entity contains said component.
 		template<typename T>
 		const bool HasComponent(const Entity& entity) const;
+
+		template<typename T>
+		const size_t& GetSize() const;
 
 
 		/*
@@ -199,12 +203,12 @@ namespace recs
 		const std::vector<Entity>& GetEntities() const;
 
 		/*
-			Save the active state of the registry.
+			Save the active state of the registry. NOT IMPLEMENTED YET
 		*/
 		void SaveState();
 
 		/*
-			Load saved state of registry.
+			Load saved state of registry. NOT IMPLEMENTED YET
 		*/
 		void LoadState();
 	};
@@ -245,9 +249,15 @@ namespace recs
 	template<typename T>
 	inline const bool recs_registry::HasComponent(const Entity& entity) const
 	{
-		T* comp = this->GetComponent<T>(entity);
+		const T* const comp = this->GetComponent<T>(entity);
 
 		return comp ? true : false;
+	}
+
+	template<typename T>
+	inline const size_t& recs_registry::GetSize() const
+	{
+		return m_componentRegistry.GetSizeOfComponentArray<T>();
 	}
 
 	template<typename T>
