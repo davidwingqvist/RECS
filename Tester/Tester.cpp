@@ -23,6 +23,8 @@ int main()
 {
     recs::recs_registry base;
 
+    base.RegisterComponent<Test>();
+
     for (recs::Entity i = 0; i < 450; i++)
     {
         recs::Entity entity = base.CreateEntity();

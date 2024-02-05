@@ -106,8 +106,19 @@ namespace recs
 		template<typename T>
 		const bool HasComponent(const Entity& entity) const;
 
+		/*
+		
+			Get the size of active components for
+			specified component array.
+		
+		*/
 		template<typename T>
 		const size_t& GetSize() const;
+
+		/*
+			Get the maximum size of any component array.
+		*/
+		const size_t& GetMaxSize() const;
 
 
 		/*
@@ -203,14 +214,13 @@ namespace recs
 		const std::vector<Entity>& GetEntities() const;
 
 		/*
-			Save the active state of the registry. NOT IMPLEMENTED YET
+		
+			Register data to be saved onto file,
+			it can then be loaded with #### function.
+		
 		*/
-		void SaveState();
-
-		/*
-			Load saved state of registry. NOT IMPLEMENTED YET
-		*/
-		void LoadState();
+		template<typename T>
+		void RegisterDataToState(const T& dataType);
 	};
 
 	template<typename T>
@@ -314,6 +324,12 @@ namespace recs
 	inline recs_entity_group<types...> recs_registry::Group()
 	{
 		return std::move(recs_entity_group<types...>(this));
+	}
+
+	template<typename T>
+	inline void recs_registry::RegisterDataToState(const T& dataType)
+	{
+		m_stateHandler.RegisterData(dataType, (void*)this->GetComponentRegistry().GetComponentArray<T>());
 	}
 }
 
