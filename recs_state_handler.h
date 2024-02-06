@@ -6,10 +6,6 @@ namespace recs
 	class recs_registry;
 	class recs_component_registry;
 
-
-
-	const std::string DEFAULT_STATE_FOLDER = "data/recs/";
-
 	class recs_state_handler
 	{
 	private:
@@ -20,8 +16,6 @@ namespace recs
 		// {id, {sizeof T, pointer to T}}
 		std::unordered_map<size_t, std::pair<size_t, void*>> m_dataTypeReg; // Register of all data types.
 		std::string m_fileFolderPath;
-
-		void LoadRegisteredData();
 
 	public:
 
@@ -37,7 +31,7 @@ namespace recs
 	template<typename T>
 	inline void recs_state_handler::RegisterData(const T& dataType, void* ptr)
 	{
-		m_dataTypeReg[typeid(T).hash_code()] = {sizeof T, ptr};
+		m_dataTypeReg[typeid(T).hash_code()] = {sizeof(dataType), ptr};
 	}
 }
 

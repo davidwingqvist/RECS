@@ -29,6 +29,16 @@ recs::recs_registry::~recs_registry()
 
 }
 
+void recs::recs_registry::SaveData()
+{
+	m_stateHandler.SaveData();
+}
+
+void recs::recs_registry::LoadData()
+{
+	m_stateHandler.LoadData();
+}
+
 const size_t& recs::recs_registry::GetMaxSize() const
 {
 	return m_size;

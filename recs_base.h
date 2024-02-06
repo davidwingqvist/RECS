@@ -221,6 +221,9 @@ namespace recs
 		*/
 		template<typename T>
 		void RegisterDataToState(const T& dataType);
+
+		void SaveData();
+		void LoadData();
 	};
 
 	template<typename T>

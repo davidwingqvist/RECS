@@ -33,7 +33,11 @@ int main()
         base.AddComponent<Test3>(entity);
     }
 
+    base.RegisterDataToState(Test2());
+
     double start = omp_get_wtime();
+
+    base.SaveData();
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
