@@ -14,7 +14,7 @@ namespace recs
 
 	void* recs_component_registry::GetComponentArray(const size_t& compArrId) const
 	{
-		return m_componentArrays.at(compArrId).get();
+		return m_componentArrays.at(compArrId).get()->GetData();
 	}
 
 	void recs::recs_component_registry::EntityRemoved(const Entity& entity)

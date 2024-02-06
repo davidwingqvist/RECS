@@ -17,12 +17,12 @@ namespace recs
 		for (auto& data : m_dataTypeReg)
 		{
 			char* buffer = new char[data.second.first];
-			void* ptr = m_compReg->GetComponentArray(data.first);
+			char* ptr = (char*)m_compReg->GetComponentArray(data.first);
 			std::string path = DEFAULT_STATE_FOLDER /*+ std::to_string(data.first) + ".txt"*/;
 			std::ofstream stream(path);
 			for (int i = 0; i < m_registry->GetMaxSize(); i++)
 			{
-				memcpy(buffer, data.second.second, data.second.first);
+				memcpy(buffer, (ptr + (i * data.second.first)), data.second.first);
 				stream << buffer << ' ';
 			}
 			stream.close();
@@ -32,6 +32,18 @@ namespace recs
 
 	void recs_state_handler::LoadData()
 	{
-
+		for (auto& data : m_dataTypeReg)
+		{
+			char* buffer = new char[data.second.first];
+			std::string path = DEFAULT_STATE_FOLDER /*+ std::to_string(data.first) + ".txt"*/;
+			std::ifstream stream(path);
+			for (int i = 0; i < m_registry->GetMaxSize(); i++)
+			{
+				stream >> buffer;
+				std::cout << buffer << "\n";
+			}
+			stream.close();
+			delete[] buffer;
+		}
 	}
 }
