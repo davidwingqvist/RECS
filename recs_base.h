@@ -30,9 +30,8 @@ namespace recs
 	class recs_entity_group;
 
 	/*
-		A registry that holds each available entities.
+		A registry that holds each available entities and components.
 		This is the base class of the ECS system.
-		Usually only one instance of this object should be present.
 		Take a look at the functions present to get familiarized with the system.
 	*/
 	class recs_registry
@@ -216,13 +215,44 @@ namespace recs
 		/*
 		
 			Register data to be saved onto file,
-			it can then be loaded with #### function.
-		
+			it can then be loaded with LoadData function,
+			and saved with SaveData() function.
+			
+			Make sure to call this function before SaveData()
+			or LoadData(), otherwise it might not load/save, or
+			undefined behavior might occur.
+
+			This function will also Register the component to the system
+			if not already done.
 		*/
 		template<typename T>
 		void RegisterDataToState(const T& dataType);
 
+		/*
+		
+			Set the folder path for data to be stored.
+			
+		*/
+		void SetDataFolderPath(const std::string& path);
+
+		/*
+		
+			Save data to a file specified by SetDataFolderPath(string)
+			otherwise uses default path.
+
+			BEFORE USING THIS FUNCTION, REGISTER DATA TO STATE BY
+			USING THE RegisterDataToState(struct()) FUNCTION!
+		*/
 		void SaveData();
+
+		/*
+
+		Load data to a file specified by SetDataFolderPath(string)
+		otherwise uses default path.
+
+		BEFORE USING THIS FUNCTION, REGISTER DATA TO STATE BY
+		USING THE RegisterDataToState(struct()) FUNCTION!
+		*/
 		void LoadData();
 	};
 
@@ -332,6 +362,12 @@ namespace recs
 	template<typename T>
 	inline void recs_registry::RegisterDataToState(const T& dataType)
 	{
+		T* compArray = m_componentRegistry.GetComponentArray<T>();
+		if (compArray == nullptr) // Register if not existant.
+		{
+			this->RegisterComponent<T>();
+		}
+
 		m_stateHandler.RegisterData(dataType, (void*)this->GetComponentRegistry().GetComponentArray<T>());
 	}
 }

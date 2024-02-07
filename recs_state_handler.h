@@ -24,6 +24,9 @@ namespace recs
 		template<typename T>
 		void RegisterData(const T& dataType, void* ptr);
 
+		// Set the folder path for data files.
+		void SetFolderPath(const std::string& path);
+
 		void SaveData();
 		void LoadData();
 	};

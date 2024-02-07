@@ -29,6 +29,11 @@ recs::recs_registry::~recs_registry()
 
 }
 
+void recs::recs_registry::SetDataFolderPath(const std::string& path)
+{
+	m_stateHandler.SetFolderPath(path);
+}
+
 void recs::recs_registry::SaveData()
 {
 	m_stateHandler.SaveData();
