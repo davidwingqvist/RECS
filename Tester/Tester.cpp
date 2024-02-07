@@ -25,10 +25,10 @@ int main()
         const char t = (char)(65 + i);
         Test3* test3 = base.AddComponent<Test3>(entity);
         test3->i[0] = t;
-        test3->i[1] = 's';
+        test3->i[1] = '\0';
     }
 
-    base.RegisterDataToState(Test2());
+    base.RegisterDataToState(Test3());
 
     double start = omp_get_wtime();
 
