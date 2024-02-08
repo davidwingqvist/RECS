@@ -10,6 +10,10 @@ namespace recs
 
 		std::unordered_map<size_t, std::shared_ptr<recs_component_array_interface>> m_componentArrays{};
 
+	protected:
+
+		void* GetComponentArray(const size_t& compArrId) const;
+
 	public:
 		 
 		recs_component_registry() = default;
@@ -52,8 +56,6 @@ namespace recs
 		template<typename T>
 		T* GetComponentArray(const T& compArr) const;
 
-		void* GetComponentArray(const size_t& compArrId) const;
-
 		template<typename T>
 		const size_t& GetSizeOfComponentArray() const;
 
@@ -67,6 +69,8 @@ namespace recs
 
 		template<typename T>
 		void AssignOnDestroyToComponent(std::function<void(const Entity&, T&)> func);
+	
+		friend class recs_state_handler;
 	};
 
 	template<typename T>

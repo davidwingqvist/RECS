@@ -73,7 +73,8 @@ namespace recs
 
 	protected:
 
-
+		// Generate an entity from id.
+		void CreateEntity(const Entity& entityId);
 
 	public:
 
@@ -84,9 +85,6 @@ namespace recs
 
 		// Generates an entity and outputs it. Another copy is stored inside.
 		Entity CreateEntity();
-
-		// Generate an entity from id.
-		void CreateEntity(const Entity& entityId);
 
 		/*
 			Add a component to an entity, outputs a pointer to the newely created component.
@@ -267,6 +265,10 @@ namespace recs
 		USING THE RegisterDataToState(struct()) FUNCTION!
 		*/
 		bool LoadData();
+
+		// Friend classes
+		friend class recs_state_handler;
+
 	};
 
 	template<typename T>

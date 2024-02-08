@@ -44,7 +44,7 @@ int main()
     //base.SaveData();
     base.LoadData();
 
-    auto& t = base.GetEntities();
+     auto& t = base.GetEntities();
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";
