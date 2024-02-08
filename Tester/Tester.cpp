@@ -22,13 +22,13 @@ struct Test3
 
 int main()
 {
-    recs::recs_registry base(5);
+    recs::recs_registry base(500);
 
-    for (recs::Entity i = 0; i < 5; i++)
+    for (recs::Entity i = 0; i < 500; i++)
     {
         //recs::Entity entity = base.CreateEntity();
-        //base.AddComponent<Test2>(entity)->i = 56 + (i * 100);
-        //base.AddComponent<Test>(entity)->j = 100 + i * 50;
+        //base.AddComponent<Test2>(entity)->i = 56 + (i);
+        //base.AddComponent<Test>(entity)->j = 100 + i;
         //const char t = (char)(65 + i);
         //Test3* test3 = base.AddComponent<Test3>(entity);
         //test3->i[0] = t;
@@ -44,7 +44,7 @@ int main()
     //base.SaveData();
     base.LoadData();
 
-
+    auto& t = base.GetEntities();
 
     double end = omp_get_wtime() - start;
     std::cout << "Time: " << end << "\n";

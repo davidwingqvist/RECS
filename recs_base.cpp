@@ -14,7 +14,7 @@ recs::recs_registry::recs_registry(const size_t& size)
 	:m_stateHandler(this, &this->GetComponentRegistry())
 {
 	m_size = size;
-	for (Entity i = 0; i < m_size; i++)
+	for (Entity i = m_size - 1; i != NULL_ENTITY; i--)
 	{
 		m_availableEntities.push_back(i);
 	}
@@ -69,14 +69,14 @@ void recs::recs_registry::SetDataFolderPath(const std::string& path)
 	m_stateHandler.SetFolderPath(path);
 }
 
-void recs::recs_registry::SaveData()
+bool recs::recs_registry::SaveData()
 {
-	m_stateHandler.SaveData();
+	return m_stateHandler.SaveData();
 }
 
-void recs::recs_registry::LoadData()
+bool recs::recs_registry::LoadData()
 {
-	m_stateHandler.LoadData();
+	return m_stateHandler.LoadData();
 }
 
 const size_t& recs::recs_registry::GetMaxSize() const

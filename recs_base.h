@@ -71,6 +71,10 @@ namespace recs
 			return dynamic_cast<recs_event_handler<T>*>(m_eventHandler.at(type).get());
 		}
 
+	protected:
+
+
+
 	public:
 
 		// Creates a registry, allocated assigned(size) amount of entities.
@@ -252,7 +256,7 @@ namespace recs
 			BEFORE USING THIS FUNCTION, REGISTER DATA TO STATE BY
 			USING THE RegisterDataToState(struct()) FUNCTION!
 		*/
-		void SaveData();
+		bool SaveData();
 
 		/*
 
@@ -262,7 +266,7 @@ namespace recs
 		BEFORE USING THIS FUNCTION, REGISTER DATA TO STATE BY
 		USING THE RegisterDataToState(struct()) FUNCTION!
 		*/
-		void LoadData();
+		bool LoadData();
 	};
 
 	template<typename T>
@@ -325,7 +329,10 @@ namespace recs
 		if (m_size < size)
 		{
 			m_componentRegistry.RegisterComponent<T>(m_size);
+
+#ifdef _DEBUG
 			std::cout << "RECS [NOTICE]: Size was higher than available entities, size was adjusted to: " << m_size << " components.\n";
+#endif
 			return;
 		}
 
@@ -374,7 +381,7 @@ namespace recs
 		T* compArray = m_componentRegistry.GetComponentArray<T>();
 		if (compArray == nullptr) // Register if not existant.
 		{
-			this->RegisterComponent<T>();
+			this->RegisterComponent<T>(m_size);
 		}
 
 		m_stateHandler.RegisterData(dataType, (void*)this->GetComponentRegistry().GetComponentArray<T>());
@@ -521,9 +528,9 @@ namespace recs
 
 			Link const* link = nullptr;
 			((size == dynamic_cast<recs_entity_handle<views>*>(this)->Size() ? link = &dynamic_cast<recs_entity_handle<views>*>(this)->GetLink() : link = link), ...);
-
+#ifdef _DEBUG
 			assert(link != nullptr && "RECS [ASSERT ERROR]: Couldn't find the lowest link.");
-
+#endif
 			return link;
 		}
 
@@ -587,7 +594,9 @@ namespace recs
 		*/
 		void Next() const
 		{
+#ifdef _DEBUG
 			std::cout << "This function is not implemented.\n";
+#endif
 		}
 
 		/*
@@ -595,7 +604,9 @@ namespace recs
 		*/
 		void ResetNext() const
 		{
+#ifdef _DEBUG
 			std::cout << "This function is not implemented.\n";
+#endif
 		}
 
 		/*
