@@ -38,7 +38,7 @@ namespace recs
 	{
 	private:
 
-		std::queue<recs::Entity> m_availableEntities;
+		std::vector<recs::Entity> m_availableEntities;
 		std::vector<Entity> m_activeEntities;
 		recs_component_registry m_componentRegistry;
 		recs_thread_pool m_threadpool;
@@ -52,6 +52,12 @@ namespace recs
 		std::unordered_map<size_t, std::shared_ptr<recs_event_handler_interface>> m_eventHandler;
 
 		size_t m_size = DEFAULT_MAX_ENTITIES;
+
+		/*
+		* Check if an entity already exists.
+		* Returns true if it exists, otherwise false.
+		*/
+		bool CheckIfExist(const Entity& entId) const;
 
 		template<typename T>
 		recs_event_handler<T>* GetEventHandler()
@@ -74,6 +80,9 @@ namespace recs
 
 		// Generates an entity and outputs it. Another copy is stored inside.
 		Entity CreateEntity();
+
+		// Generate an entity from id.
+		void CreateEntity(const Entity& entityId);
 
 		/*
 			Add a component to an entity, outputs a pointer to the newely created component.
