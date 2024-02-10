@@ -31,7 +31,7 @@ namespace recs
 		for (auto& data : m_dataTypeReg)
 		{
 			std::string path = m_fileFolderPath + std::to_string(data.first) + ".txt";
-			std::ofstream stream(path);
+			std::ofstream stream(path, std::ios_base::binary);
 
 			// Couldn't open file, close.
 			if (!stream.is_open())
@@ -123,7 +123,7 @@ namespace recs
 			for (auto& data : m_dataTypeReg)
 			{
 				std::string path = m_fileFolderPath + std::to_string(data.first) + ".txt";
-				std::ifstream stream(path);
+				std::ifstream stream(path, std::ios_base::binary);
 
 				// Couldn't open file, close.
 				if (!stream.is_open())
