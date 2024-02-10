@@ -53,6 +53,8 @@ namespace recs
 
 		void UpdateAllComponents();
 
+		void Clear();
+
 		template<typename T>
 		T* GetComponentArray() const;
 

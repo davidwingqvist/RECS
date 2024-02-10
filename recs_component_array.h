@@ -13,6 +13,7 @@ namespace recs
 		virtual void UpdateComponents() = 0;
 		virtual void* GetData() = 0;
 		virtual std::vector<EntityLink>& GetLinks() = 0;
+		virtual void Clear() = 0;
 
 		friend class recs_state_handler;
 		friend class recs_component_registry;
@@ -261,6 +262,15 @@ namespace recs
 		std::vector<EntityLink>& GetLinks() override
 		{
 			return m_activeComponents;
+		}
+
+		// Inherited via recs_component_array_interface
+		void Clear() override
+		{
+			m_availableComponents.clear();
+			m_activeComponents.clear();
+			m_posToEntity.clear();
+			m_entityToPos.clear();
 		}
 };
 

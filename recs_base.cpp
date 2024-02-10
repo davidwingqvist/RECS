@@ -76,7 +76,20 @@ bool recs::recs_registry::SaveData()
 
 bool recs::recs_registry::LoadData()
 {
+	this->Reset();
 	return m_stateHandler.LoadData();
+}
+
+void recs::recs_registry::Reset()
+{
+	m_availableEntities.clear();
+	m_activeEntities.clear();
+	for (Entity i = m_size - 1; i != NULL_ENTITY; i--)
+	{
+		m_availableEntities.push_back(i);
+	}
+
+	m_componentRegistry.Clear();
 }
 
 const size_t& recs::recs_registry::GetMaxSize() const

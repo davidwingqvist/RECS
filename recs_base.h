@@ -261,10 +261,19 @@ namespace recs
 		Load data to a file specified by SetDataFolderPath(string)
 		otherwise uses default path.
 
+		Will clear any data stored in component arrays.
+		Raw data may be untouched.
+
 		BEFORE USING THIS FUNCTION, REGISTER DATA TO STATE BY
 		USING THE RegisterDataToState(struct()) FUNCTION!
 		*/
 		bool LoadData();
+
+		/*
+			Reset all values.
+			Does not remove/shorten any data.
+		*/
+		void Reset();
 
 		// Friend classes
 		friend class recs_state_handler;

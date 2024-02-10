@@ -24,10 +24,10 @@ int main()
 {
     recs::recs_registry base(500);
 
- /*   for (recs::Entity i = 0; i < 500; i++)
+    for (recs::Entity i = 0; i < 500; i++)
     {
         recs::Entity entity = base.CreateEntity();
-        base.AddComponent<Test2>(entity)->i = i;
+        base.AddComponent<Test2>(entity)->i = i + 50;
         Test* ts = base.AddComponent<Test>(entity);
         
         ts->i = i;
@@ -37,7 +37,7 @@ int main()
         Test3* test3 = base.AddComponent<Test3>(entity);
         test3->i[0] = t;
         test3->i[1] = 's';
-    }*/
+    }
 
     base.RegisterDataToState(Test2());
     //base.RegisterDataToState(Test3());
