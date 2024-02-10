@@ -13,6 +13,7 @@ namespace recs
 	protected:
 
 		void* GetComponentArray(const size_t& compArrId) const;
+		void LinkEntityToPos(const size_t& compArrId, const Entity& entity, const size_t& pos);
 
 	public:
 		 
@@ -44,6 +45,8 @@ namespace recs
 
 		template<typename T>
 		const std::vector<EntityLink>& GetEntityLinks() const;
+
+		const std::vector<EntityLink>& GetEntityLinks(const size_t& id) const;
 
 		template<typename T>
 		const Link& GetEntityLink() const;

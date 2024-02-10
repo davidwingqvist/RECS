@@ -48,6 +48,7 @@ namespace recs
 				// Copy data from array to buffer.
 				memcpy(buffer, (ptr + (i * data.second.first)), data.second.first);
 				stream.write(buffer, data.second.first);
+
 			}
 			stream.close();
 			delete[] buffer;
@@ -84,6 +85,32 @@ namespace recs
 			delete[] buffer;
 		}
 
+		/*
+			Save entity links
+		*/
+		{
+			for (auto& data : m_dataTypeReg)
+			{
+				std::string path = m_fileFolderPath + std::to_string(data.first) + "_links.txt";
+				std::ofstream stream(path);
+
+				// Couldn't open file, close.
+				if (!stream.is_open())
+				{
+					return false;
+				}
+
+				auto& links = m_registry->GetComponentRegistry().GetEntityLinks(data.first);
+				// start with size
+				stream << links.size() << ' ';
+				for (int i = 0; i < links.size(); i++)
+				{
+					stream << links[i].entity << ' ' << links[i].pos << ' ';
+				}
+				stream.close();
+			}
+		}
+
 		return true;
 	}
 
@@ -92,29 +119,31 @@ namespace recs
 		/*
 			Load Components
 		*/
-		for (auto& data : m_dataTypeReg)
 		{
-			std::string path = m_fileFolderPath + std::to_string(data.first) + ".txt";
-			std::ifstream stream(path);
-
-			// Couldn't open file, close.
-			if (!stream.is_open())
+			for (auto& data : m_dataTypeReg)
 			{
-				return false;
-			}
+				std::string path = m_fileFolderPath + std::to_string(data.first) + ".txt";
+				std::ifstream stream(path);
 
-			char* buffer = new char[data.second.first + 1];
-			buffer[data.second.first] = '\0'; // make terminate string.
-			char* ptr = (char*)m_compReg->GetComponentArray(data.first);
+				// Couldn't open file, close.
+				if (!stream.is_open())
+				{
+					return false;
+				}
 
-			for (int i = 0; i < m_registry->GetMaxSize(); i++)
-			{
-				stream.read(buffer, data.second.first);
-				// Copy data from buffer to array.
-				memcpy(ptr + (i * data.second.first), buffer, data.second.first);
+				char* buffer = new char[data.second.first];
+				char* ptr = (char*)m_compReg->GetComponentArray(data.first);
+
+				for (int i = 0; i < m_registry->GetMaxSize(); i++)
+				{
+					stream.read(buffer, data.second.first);
+
+					// Copy data from buffer to array.
+					memcpy(ptr + (i * data.second.first), buffer, data.second.first);
+				}
+				stream.close();
+				delete[] buffer;
 			}
-			stream.close();
-			delete[] buffer;
 		}
 
 		/*
@@ -130,7 +159,6 @@ namespace recs
 				return false;
 			}
 
-			char* buffer = new char[sizeof Entity];
 			size_t size = 0;
 			char* size_buffer = new char[sizeof size_t];
 			stream.read(size_buffer, sizeof size_t);
@@ -145,7 +173,37 @@ namespace recs
 				m_registry->CreateEntity(ent);
 			}
 			stream.close();
-			delete[] buffer;
+		}
+
+		/*
+			Load entity links
+		*/
+		{
+			auto& compReg = m_registry->GetComponentRegistry();
+
+			for (auto& data : m_dataTypeReg)
+			{
+				std::string path = m_fileFolderPath + std::to_string(data.first) + "_links.txt";
+				std::ifstream stream(path);
+
+				// Couldn't open file, close.
+				if (!stream.is_open())
+				{
+					return false;
+				}
+
+				size_t length = 0;
+				stream >> length;
+				for (int i = 0; i < length; i++)
+				{
+					size_t pos = 0;
+					Entity entity = 0;
+					stream >> entity >> pos;
+
+					compReg.LinkEntityToPos(data.first, entity, pos);
+				}
+				stream.close();
+			}
 		}
 
 		return true;
