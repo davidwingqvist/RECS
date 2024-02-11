@@ -252,6 +252,9 @@ namespace recs
 				m_activeComponents.push_back({ entity, pos });
 				m_posToEntity[pos] = entity;
 				m_entityToPos[entity] = pos;
+
+				if (m_onCreateFunction)
+					m_onCreateFunction(entity, m_components[m_entityToPos[entity]]);
 			}
 		}
 
