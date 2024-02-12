@@ -22,7 +22,7 @@ struct Test3
 
 int main()
 {
-    recs::recs_registry base(500);
+    recs::recs_registry base(500); 
 
     //for (recs::Entity i = 0; i < 500; i++)
     //{
@@ -40,6 +40,8 @@ int main()
     //}
 
     base.RegisterDataToState(Test2());
+
+    base.RegisterComponent<Test>();
 
     //base.RegisterOnCreate<Test2>([](const recs::Entity& ent, Test2& t) {
 
