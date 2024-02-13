@@ -109,8 +109,16 @@ namespace recs
 		{
 			if (m_availableComponents.empty())
 			{
+#ifdef _DEBUG
 				std::cout << "RECS [Warning!]: Tried to link entity: " << entity <<  " to a component array which was full!\n";
+#endif
 				return nullptr;
+			}
+
+			// Already have component, return it.
+			if (m_entityToPos.find(entity) != m_entityToPos.end())
+			{
+				return m_components[m_entityToPos[entity]];
 			}
 
 			const size_t pos = m_availableComponents.back();
