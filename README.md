@@ -5,8 +5,8 @@ For How-to-Use check out the Wiki page.
 
 こちらのプロジェクトは個人的なデータ指向型のECSライブラリーです。
 
-ECSとは？　・　ECSとはEntity Component Systemと言うデータ指向型のデータ管理最適化技術でございます。
-Entityは簡単に言うとシステムの単位である、Componentと繋がり、繋がったデータを監督できる要素です。ComponentはEntityと繋がり、データを保存できる要素です。
+ECSとは？　・　ECSとはEntity Component Systemと言うデータ指向型のデータ管理最適化技術です。
+Entityは簡単に言うとシステムの単位であり、Componentと繋がり、繋がったデータを監督できる要素です。ComponentはEntityと繋がり、データを保存できる要素です。
 
 Componentは構造体なので、自分で要素を入れれますが、注意することはその要素のビットがメモリーに直列して並べられるかどうかを確認した方がいいです。
 
