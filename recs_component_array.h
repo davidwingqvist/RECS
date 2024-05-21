@@ -118,7 +118,7 @@ namespace recs
 			// Already have component, return it.
 			if (m_entityToPos.find(entity) != m_entityToPos.end())
 			{
-				return m_components[m_entityToPos[entity]];
+				return &m_components[m_entityToPos[entity]];
 			}
 
 			const size_t pos = m_availableComponents.back();
